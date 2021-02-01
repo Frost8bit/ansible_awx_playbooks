@@ -13,4 +13,4 @@
 
     - name: check stdout
       ansible.builtin.shell: echo "output not is empty"
-      failed_when: tables_list.rc == 0
+      failed_when: tables_list.stdout == ""
