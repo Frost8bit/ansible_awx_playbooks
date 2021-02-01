@@ -3,7 +3,7 @@
   tasks:
     - name: check autoincrement
       shell:
-        cmd: mysql -uroot porta-billing -sse "select count(*) from CDR_Accounts where bill_time between (NOW()- INTERVAL 1 DAY) and NOW();"
+        cmd: mysql -uroot porta-billing -sse "select * from Accounts where i_account=0;"
       register: tables_list
       
     - name: transfer data to pass down to the next Job template
