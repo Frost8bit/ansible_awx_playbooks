@@ -12,5 +12,5 @@
           sql_result: "{{ tables_list }}"
 
     - name: check stdout
-      ansible.builtin.shell: echo "output not is empty"
+      ansible.builtin.shell: echo "output is not empty"
       failed_when: tables_list.stdout == ""
