@@ -12,4 +12,5 @@
           sql_result: "{{ tables_list }}"
 
     - name: check stdout
+      ansible.builtin.shell: echo "motd contains the word hi"
       when: sql_result.stdout.find('Empty Set') != -1
