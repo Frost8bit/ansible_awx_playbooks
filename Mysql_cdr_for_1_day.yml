@@ -12,4 +12,5 @@
           sql.result: "{{ tables_list }}"
 
     - name: check stdout
+        cmd: echo "checkout"
       when: sql.result.stdout.find('Empty Set') != -1
