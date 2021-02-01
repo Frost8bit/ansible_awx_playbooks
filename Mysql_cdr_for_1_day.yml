@@ -9,8 +9,7 @@
     - name: transfer data to pass down to the next Job template
       set_stats:
         data:
-          sql.result: "{{ tables_list }}"
+          sql_result: "{{ tables_list }}"
 
     - name: check stdout
-        cmd: echo "checkout"
-      when: sql.result.stdout.find('Empty Set') != -1
+      when: sql_result.stdout.find('Empty Set') != -1
