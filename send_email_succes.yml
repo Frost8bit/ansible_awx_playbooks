@@ -5,8 +5,8 @@
 
     - name: Debug tables_list
       debug:
-        var: tables_list
+        var: sql_result
 
     - name: send email with variable
       shell: 
-       cmd:  echo "{{ tables_list }} calls have been produced for the previous day" | mail -s "Ansible Results" bondar.aleks.v@gmail.com
+       cmd:  echo "{{ sql_result }} calls have been produced for the previous day" | mail -s "Ansible Results" bondar.aleks.v@gmail.com
