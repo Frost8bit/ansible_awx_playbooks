@@ -13,4 +13,4 @@
     - name: transfer data to pass down to the next Job template
       set_stats:
         data:
-          sql_result: "{{ tables_list }}"
+          sql_result: "{{ tables_list.stdout }}"
