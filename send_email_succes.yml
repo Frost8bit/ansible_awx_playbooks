@@ -1,0 +1,9 @@
+- hosts: all
+  tasks:
+      - name: Debug my_personal_variable
+        debug:
+        var: my_personal_variable
+        
+      - name: send email with variable
+        shell: 
+          cmd:  echo "{{ tables_list }} calls have been produced for the previous day" | mail -s "Ansible Results" bondar.aleks.v@gmail.com
