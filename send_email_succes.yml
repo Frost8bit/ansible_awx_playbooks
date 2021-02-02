@@ -1,8 +1,8 @@
 - hosts: all
   tasks:
-      - name: Debug my_personal_variable
+      - name: Debug tables_list
         debug:
-        var: my_personal_variable
+        var: tables_list
         
       - name: send email with variable
         shell: 
