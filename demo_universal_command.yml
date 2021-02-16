@@ -2,12 +2,17 @@
   hosts: all
   gather_facts: no
   tasks:
-    - name: run1
+    - name: zapusk
       shell:
         cmd: "{{ command1 }}"
-      register: command1result
+      register: result1
+      
+     - name: next
+      shell:
+        cmd: "{{ command2 }}"
+      register: result2
 
     - name: transfer data to pass down to the next Job template
       set_stats:
         data:
-          output1: "{{ command1result.stdout }}" 
+          output1: "{{ result1.stdout }}" 
