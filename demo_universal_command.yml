@@ -7,11 +7,6 @@
         cmd: "{{ command1 }}"
       register: command1result
 
-    - name: run2
-      shell:
-        cmd: "{{ command2 }}"
-      register: command2result
-
     - name: transfer data to pass down to the next Job template
       set_stats:
         data:
