@@ -5,7 +5,7 @@
     - name: run1
       shell:
         cmd: "{{ command_1 }}"
-       register: command1_result
+      register: command1_result
 
     - name: run2
       shell:
