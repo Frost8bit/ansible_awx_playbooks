@@ -7,7 +7,7 @@
         cmd: "{{ command1 }}"
       register: result1
       
-     - name: next
+    - name: next
       shell:
         cmd: "{{ command2 }}"
       register: result2
