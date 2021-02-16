@@ -5,14 +5,14 @@
     - name: run1
       shell:
         cmd: "{{ command1 }}"
-      register: command1_result
+      register: command1result
 
     - name: run2
       shell:
         cmd: "{{ command2 }}"
-      register: command2_result
+      register: command2result
 
     - name: transfer data to pass down to the next Job template
       set_stats:
         data:
-          output1: "{{ command1_result.stdout }}" 
+          output1: "{{ command1result.stdout }}" 
