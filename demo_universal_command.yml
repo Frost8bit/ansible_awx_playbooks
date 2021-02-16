@@ -1,6 +1,5 @@
-- name: run commands from variables and transfer stdout to the further jobs 
+- name: run commands from variables and transfer stdout
   hosts: all
-  gather_facts: no
   tasks:
     - name: run command from command_1 variable
       shell:
