@@ -2,18 +2,18 @@
   hosts: all
   gather_facts: no
   tasks:
-    - name: run command from var_1 variable
+    - name: run command from command_1 variable
       shell:
-        cmd: "{{ var_1 }}"
+        cmd: "{{ command_1 }}"
       register: command1_result
 
-    - name: run command from var_2 variable
+    - name: run command from command_2 variable
       shell:
-        cmd: "{{ var_2 }}"
+        cmd: "{{ command_2 }}"
       register: command2_result
 
     - name: transfer data to pass down to the next Job template
       set_stats:
         data:
-          output1: "{{ command_result1.stdout }}" 
-          output2: "{{ command_result2.stdout }}"
+          output1: "{{ command1_result.stdout }}" 
+          output2: "{{ command2_result.stdout }}"
