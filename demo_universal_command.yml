@@ -1,13 +1,13 @@
-- name: run commands from variables and transfer stdout
+- name: runnn
   hosts: all
   gather_facts: no
   tasks:
-    - name: run command from command_1 variable
+    - name: run1
       shell:
         cmd: "{{ command1 }}"
       register: command1_result
 
-    - name: run command from command_2 variable
+    - name: run2
       shell:
         cmd: "{{ command2 }}"
       register: command2_result
@@ -16,4 +16,3 @@
       set_stats:
         data:
           output1: "{{ command1_result.stdout }}" 
-          output2: "{{ command2_result.stdout }}"
