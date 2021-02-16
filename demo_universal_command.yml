@@ -1,6 +1,7 @@
 - name: run commands from variables and transfer stdout
   hosts: all
   tasks:
+  
     - name: run command from command_1 variable
       shell:
         cmd: "{{ command_1 }}"
