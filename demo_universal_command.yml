@@ -1,4 +1,4 @@
-- name: run commands from variables and transfer stdout
+- name: run commands
   hosts: all
   tasks:
   
