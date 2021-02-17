@@ -1,13 +1,13 @@
-- name: runnn
+- name: run commands from variables
   hosts: all
   gather_facts: no
   tasks:
-    - name: zapusk
+    - name: run command1
       shell:
         cmd: "{{ command1 }}"
       register: result1
       
-    - name: next
+    - name: run command2
       shell:
         cmd: "{{ command2 }}"
       register: result2
