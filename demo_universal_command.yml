@@ -16,3 +16,4 @@
       set_stats:
         data:
           output1: "{{ result1.stdout }}" 
+          output2: "{{ result2.stdout }}" 
