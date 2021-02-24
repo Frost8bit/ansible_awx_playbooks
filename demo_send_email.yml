@@ -3,4 +3,4 @@
 
     - name: send email from variables
       shell: 
-       cmd:  printf "{{ output1 }} {{ email_text1 }} \n {{ output2 }} {{ email_text2 }}"  | mail -s "{{ email_subject }}" {{ email_recipient }}
+       cmd:  printf "{{ output2 }} {{ email_text1 }} \n {{ output2 }} {{ email_text2 }}"  | mail -s "{{ email_subject }}" {{ email_recipient }}
