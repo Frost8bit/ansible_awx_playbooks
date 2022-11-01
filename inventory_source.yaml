@@ -1,7 +1,4 @@
-{
-    "test": {
-        "hosts": [
-            "awx.int.portaone.com"
-        ]
-    }
-}    
+---
+awx:
+  hosts:
+    awx.int.portaone.com
