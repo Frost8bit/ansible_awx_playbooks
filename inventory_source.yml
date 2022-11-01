@@ -1,4 +1,3 @@
----  
 webservers:
     hosts:
       www[01:50:2].example.com:
