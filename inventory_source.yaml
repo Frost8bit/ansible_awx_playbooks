@@ -1,0 +1,7 @@
+{
+    "test": {
+        "hosts": [
+            "awx.int.portaone.com"
+        ]
+    }
+}    
