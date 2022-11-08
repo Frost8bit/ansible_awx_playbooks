@@ -1,0 +1,5 @@
+---
+ - hosts: all
+   tasks:
+     - name: Fetch the file from remote host to awx
+       ansible.builtin.fetch: src="{{ src_path }}" dest="{{ dest_path }}"
