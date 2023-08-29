@@ -18,7 +18,7 @@
       when:
         - email_1_text is defined
         - email_subject is defined
-        - notification_number == "1"
+        - notification_number == 1
 
     - name: Check if email_2_text is defined
       set_fact:
@@ -27,7 +27,7 @@
       when:
         - email_2_text is defined
         - email_subject is defined
-        - notification_number == "2"
+        - notification_number == 2
 
     - name: show vars
       debug:
@@ -37,5 +37,3 @@
 
     - name: show more vars
       debug: var=email_subject,email_1_text,email_2_text
-
-
