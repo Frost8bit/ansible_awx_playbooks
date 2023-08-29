@@ -32,5 +32,6 @@
     - name: show vars
       debug:
         msg:
-          - "email subject: {{ email_subject }}"
+          - "email_subject: {{ email_subject }}"
           - "notification: {{ notification | default('Notification is not defined') }}"
+
