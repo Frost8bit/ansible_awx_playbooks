@@ -12,11 +12,6 @@
         notification_number: "0"
       when: notification_number is not defined
 
-    - name: define commands
-      set_fact:
-        "{{ notification_number }}":
-          cmd_text: "{{ vars[cmd_var] if vars[notification_number] is defined else '' }}"
-
     - name: Check if email_1_text is defined
       set_fact:
         notification: "{{ email_1_text }}"
