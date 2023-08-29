@@ -1,0 +1,36 @@
+- hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: define prefixed
+      set_fact:
+        cmd_var: "notification_{{ notification_number }}"
+      when: notification_number is defined
+
+    - name: define non-prefixed
+      set_fact:
+        notification_number: "0"
+      when: notification_number is not defined
+
+    - name: Check if email_1_text is defined
+      set_fact:
+        notification: "{{ email_1_text }}"
+      when:
+        - email_1_text is defined
+        - email_subject is defined
+        - notification_number == "1"
+
+    - name: Check if email_2_text is defined
+      set_fact:
+        notification: "{{ email_2_text }}"
+        subject: "{{ email_subject }}"
+      when:
+        - email_2_text is defined
+        - email_subject is defined
+        - notification_number == "2"
+
+    - name: show vars
+      debug:
+        msg: |
+          email subject: {{ email_subject }}
+          notification: {{ notification }}
