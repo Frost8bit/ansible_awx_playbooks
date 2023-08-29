@@ -1,0 +1,44 @@
+- hosts: localhost
+  gather_facts: no
+  
+  tasks:
+
+      - name: define prefixed
+      set_fact:
+        cmd_var: "notification_{{ notification_number }}"
+      when: notification_number is defined
+
+    - name: define non-prefixed
+      set_fact:
+        notification_number: "0"
+      when: notification_number is not defined
+
+    - name: define commands
+      set_fact:
+        "{{ notification_number }}":
+            cmd_text: "{{ vars[cmd_var] if vars[notification_number] is defined else '' }}"
+
+    - name: Check if email_1_text is defined
+      set_fact:
+        notification: "{{ email_1_text }}"
+      when: 
+      - email_1_text is defined
+      - notification_number == 1
+
+    - name: Check if email_text2 is defined
+      set_fact:
+        notification: "{{ email_text2 }}"
+      when: 
+      - email_2_text is defined
+      - notification_number == 2
+
+    - name: show vars
+      debug: var=email_subject,email_text1,email_text2
+
+    - name: transfer data to pass down to the next Job template
+      set_stats:
+        data:
+           "{{ email_subject }}": "{{ vars[email_subject] }}"
+           "{{ email_text1 }}": "{{ vars[email_text1] }}"
+           "{{ email_text2 }}": "{{ vars[email_text2] }}"
+        per_host: no  # <-- important
