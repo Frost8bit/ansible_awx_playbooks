@@ -30,3 +30,7 @@
     - name: Check response from RT
       debug:
         var: response
+
+    - name: Debug API Response
+      debug:
+        var: response.content
