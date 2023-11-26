@@ -3,9 +3,10 @@
   gather_facts: no
 
   tasks:
-    - name: Get password
+    - name: Get RT credentials
       debug:
-        msg: "{{ pass }}"
+        msg: "{{ rt_password }}"
+        msg: "{{ rt_login }}"
 
     - name: Check if 'notification' variable is defined and not empty
       fail:
