@@ -1,0 +1,30 @@
+- name: Send notification to ticket
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Check if 'notification' variable is defined and not empty
+      fail:
+        msg: "'notification' variable is not defined or empty"
+      when: notification is undefined or notification | trim == ""
+
+    - name: Check if 'ticket_id' variable is defined and not empty
+      fail:
+        msg: "'ticket_id' variable is not defined or empty"
+      when: ticket_id is undefined or ticket_id | trim == ""
+
+    - name: Add a reply to the ticket in RT
+      uri:
+        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
+        method: POST
+        body_format: form-urlencoded
+        body:
+          content: "id: {{ ticket_id }}\nAction: comment\nText: {{ notification }}"
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+          # Add additional headers like authentication tokens if required
+      register: response
+
+    - name: Check response from RT
+      debug:
+        var: response
