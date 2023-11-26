@@ -4,7 +4,7 @@
 
   tasks:
     - name: Get environment
-    debug:
+      debug:
       msg: "{{ ansible_env }}"
 
     - name: Check if 'notification' variable is defined and not empty
