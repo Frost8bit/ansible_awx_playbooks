@@ -3,10 +3,9 @@
   gather_facts: no
 
   tasks:
-    - name: Get environment
-      module:
-        username: borland
-        password: "{{ pass }}"
+    - name: Get password
+      debug:
+        msg: "{{ pass }}"
 
     - name: Check if 'notification' variable is defined and not empty
       fail:
