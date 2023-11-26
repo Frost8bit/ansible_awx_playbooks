@@ -5,7 +5,7 @@
   tasks:
     - name: Get environment
       debug:
-      msg: "{{ ansible_env }}"
+      msg: "{{ RT_Credentials }}"
 
     - name: Check if 'notification' variable is defined and not empty
       fail:
