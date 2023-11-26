@@ -4,8 +4,9 @@
 
   tasks:
     - name: Get environment
-      debug:
-        msg: "{{ ansible_env  }}"
+      module:
+        username: borland
+        password: "{{ pass }}"
 
     - name: Check if 'notification' variable is defined and not empty
       fail:
