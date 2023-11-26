@@ -3,10 +3,6 @@
   gather_facts: no
 
   tasks:
-    - name: Get RT credentials
-      debug:
-        msg: "password: {{ rt_password }}, login: {{ rt_login }}"
-
     - name: Check if 'notification' variable is defined and not empty
       fail:
         msg: "'notification' variable is not defined or empty"
@@ -21,12 +17,13 @@
       uri:
         url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
         method: POST
+        user: "{{ rt_login }}"
+        password: "{{ rt_password }}"
         body_format: form-urlencoded
         body:
           content: "id: {{ ticket_id }}\nAction: comment\nText: {{ notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
-          # Add additional headers like authentication tokens if required
       register: response
 
     - name: Check response from RT
