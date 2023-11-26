@@ -5,8 +5,7 @@
   tasks:
     - name: Get RT credentials
       debug:
-        msg: "{{ rt_password }}"
-        msg: "{{ rt_login }}"
+        msg: "password: {{ rt_password }}, login: {{ rt_login }}"
 
     - name: Check if 'notification' variable is defined and not empty
       fail:
