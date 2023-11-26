@@ -3,6 +3,10 @@
   gather_facts: no
 
   tasks:
+    - name: Get environment
+    debug:
+      msg: "{{ ansible_env }}"
+
     - name: Check if 'notification' variable is defined and not empty
       fail:
         msg: "'notification' variable is not defined or empty"
