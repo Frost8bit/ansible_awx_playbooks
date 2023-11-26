@@ -24,6 +24,7 @@
           content: "id: {{ ticket_id }}\nAction: comment\nText: {{ notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
+        validate_certs: no
       register: response
 
     - name: Check response from RT
