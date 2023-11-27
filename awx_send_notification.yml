@@ -42,16 +42,14 @@
       uri:
         url: "{{ rt_comment_url }}"
         method: POST
-        body_format: form-urlencoded
-        body:
-          content: |
+        headers:
+          Content-Type: "form-data"
+          Referer: "{{ rt_url }}"
+          Cookie: "{{ login_response.cookies_string }}"
+          Content: |
             id: {{ ticket_id }}
             Action: correspond
             Text: {{ notification | urlencode }}
-        headers:
-          Content-Type: "application/x-www-form-urlencoded"
-          Referer: "{{ rt_url }}"
-          Cookie: "{{ login_response.cookies_string }}"
         validate_certs: no  
       register: comment_response
 
