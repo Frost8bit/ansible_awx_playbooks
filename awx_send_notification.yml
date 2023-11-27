@@ -1,58 +1,57 @@
 ---
-- name: Send notification to ticket
+- name: Post Comment to RT Ticket
   hosts: localhost
   gather_facts: no
 
-  vars:
-    rt_url: "https://rt4.int.portaone.com"
-    rt_login_url: "{{ rt_url }}/REST/1.0/"
-    rt_comment_url: "{{ rt_url }}/REST/1.0/ticket/{{ ticket_id }}/comment"
-    rt_username: "{{ rt_login }}"
-    rt_password: "{{ rt_password }}"
-    rt_content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification }}"
-
   tasks:
-    - name: Check if 'notification' variable is defined and not empty
-      fail:
-        msg: "'notification' variable is not defined or empty"
-      when: notification is undefined or notification | trim == ""
-
     - name: Check if 'ticket_id' variable is defined and not empty
       fail:
         msg: "'ticket_id' variable is not defined or empty"
       when: ticket_id is undefined or ticket_id | trim == ""
 
-    - name: Login to RT
+    - name: Check if 'comment_text' variable is defined and not empty
+      fail:
+        msg: "'comment_text' variable is not defined or empty"
+      when: comment_text is undefined or comment_text | trim == ""
+
+    - name: Generate the multipart/form-data payload
+      set_fact:
+        multipart_payload:
+          QuoteTransaction: 64032882
+          DefaultStatus: open
+          Action: Respond
+          SubmitTicket: 1
+          Token: 3e3053152ec22f74b56a370d9be41699
+          UpdateStartedAt: "2023-11-27 01:10:56"
+          old_Priority: 20
+          id: "{{ ticket_id }}"
+          UpdateType: response
+          Status: ""
+          Owner: ""
+          Priority: 20
+          UpdateSubject: "AWX Test TT"
+          SelectTemplate: ""
+          794720-RefersTo: ""
+          Articles_Content: ""
+          Articles-Include-Article-Named: ""
+          UpdateContent: "On 2023-11-17 06:33:21, Oleksii Bondar wrote:\n> {{ comment_text }}"
+          # Replace {{ comment_text }} with the actual comment text
+
+    - name: Post comment to RT ticket
       uri:
-        url: "{{ rt_login_url }}"
+        url: "https://your-rt-instance.example.com/Ticket/Update.html?id={{ ticket_id }}&Action=Respond"
         method: POST
-        body_format: form-urlencoded
-        body: 
-          user: "{{ rt_username }}"
-          pass: "{{ rt_password }}"
+        user: "{{ rt_username }}"
+        password: "{{ rt_password }}"
         headers:
-          Content-Type: "application/x-www-form-urlencoded"
-        validate_certs: no  
+          Content-Type: "multipart/form-data"
+        body: "{{ multipart_payload }}"
+        status_code: 200
         return_content: yes
-      register: login_response
+      register: response
 
-    - name: Debug login response
+    - name: Debug API Response
       debug:
-        var: login_response
+        var: response.content
 
-    - name: Add a reply to the ticket in RT
-      uri:
-        url: "{{ rt_comment_url }}"
-        method: POST
-        body_format: form-urlencoded
-        body:
-          content: "{{ rt_content | urlencode }}"
-        headers:
-          Content-Type: "application/x-www-form-urlencoded"
-          Cookie: "{{ login_response.set_cookie }}"
-        validate_certs: no  
-      register: comment_response
-
-    - name: Debug comment response
-      debug:
-        var: comment_response
+    # You can add additional tasks or error handling as needed
