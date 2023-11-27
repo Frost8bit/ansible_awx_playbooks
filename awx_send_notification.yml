@@ -1,61 +1,35 @@
-- name: Send notification to ticket
+- name: Reply to RT Ticket via Email
   hosts: localhost
   gather_facts: no
 
   vars:
-    rt_url: "https://rt4.int.portaone.com"
-    rt_login_url: "{{ rt_url }}"
-    rt_comment_url: "{{ rt_url }}/REST/1.0/ticket/{{ ticket_id }}/comment"
-    rt_username: "{{ rt_login }}"
-    rt_password: "{{ rt_password }}"
-    rt_content: "id: {{ ticket_id }} \nAction: comment \nText: {{ notification | urlencode }}"
+    rt_email: "borland@netcore.com.ua"  # Replace with your RT email address
+    ticket_id: "{{ ticket_id }}"
+    notification: "{{ notification }}"
+    smtp_server: "mx0.portaone.com"
+    smtp_user: "borland@portaone.com"
+    smtp_password: "{{ Weareleft4dead2 }}"
+    smtp_port: 587
 
   tasks:
     - name: Check if 'notification' variable is defined and not empty
       fail:
         msg: "'notification' variable is not defined or empty"
-      when: not notification or notification | trim == ""
+      when: notification is undefined or notification | trim == ""
 
     - name: Check if 'ticket_id' variable is defined and not empty
       fail:
         msg: "'ticket_id' variable is not defined or empty"
-      when: not ticket_id or ticket_id | trim == ""
+      when: ticket_id is undefined or ticket_id | trim == ""
 
-    # Login to RT
-    - name: Login to RT
-      uri:
-        url: "{{ rt_login_url }}"
-        method: POST
-        body_format: form-urlencoded
-        body:
-          username: "{{ rt_username }}"
-          password: "{{ rt_password }}"
-        headers:
-          Content-Type: "application/x-www-form-urlencoded"
-        validate_certs: no
-      register: login_response
-
-    # Debug login response
-    - name: Debug login response
-      debug:
-        msg: "{{ login_response }}"
-
-    # Add a reply to the ticket in RT
-    - name: Add a reply to the ticket in RT
-      uri:
-        url: "{{ rt_comment_url }}"
-        method: POST
-        body_format: form-urlencoded
-        body:
-          content: "{{rt_content}}"
-        headers:
-          Content-Type: "application/x-www-form-urlencoded"
-          Referer: "{{ rt_url }}"
-          Cookie: "{{ login_response.cookies_string }}"
-        validate_certs: no
-      register: comment_response
-
-    # Debug comment response
-    - name: Debug comment response
-      debug:
-        msg: "{{ comment_response }}"
+    - name: Send email to RT
+      mail:
+        host: "{{ smtp_server }}"
+        port: "{{ smtp_port }}"
+        username: "{{ smtp_user }}"
+        password: "{{ smtp_password }}"
+        to: "{{ rt_email }}"
+        subject: "[Ticket #{{ ticket_id }}] Update"
+        body: "{{ notification }}"
+        secure: starttls
+      delegate_to: localhost
