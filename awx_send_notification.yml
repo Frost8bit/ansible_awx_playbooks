@@ -1,14 +1,15 @@
+---
 - name: Send notification to ticket
   hosts: localhost
   gather_facts: no
 
   vars:
     rt_url: "https://rt4.int.portaone.com"
-    rt_login_url: "{{ rt_url }}"
+    rt_login_url: "{{ rt_url }}/REST/1.0/"
     rt_comment_url: "{{ rt_url }}/REST/1.0/ticket/{{ ticket_id }}/comment"
     rt_username: "{{ rt_login }}"
     rt_password: "{{ rt_password }}"
-    rt_content: "id: {{ ticket_id }} \nAction: correspond \nText: {{ notification | urlencode }}"
+    rt_content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification }}"
 
   tasks:
     - name: Check if 'notification' variable is defined and not empty
@@ -26,9 +27,9 @@
         url: "{{ rt_login_url }}"
         method: POST
         body_format: form-urlencoded
-        body:
-          username: "{{ rt_username }}"
-          password: "{{ rt_password }}"
+        body: 
+          user: "{{ rt_username }}"
+          pass: "{{ rt_password }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
         validate_certs: no  
@@ -45,11 +46,10 @@
         method: POST
         body_format: form-urlencoded
         body:
-          content: "{{rt_content}}" 
+          content: "{{ rt_content | urlencode }}"
         headers:
-          Content-Type: "form-data"
-          Referer: "{{ rt_url }}"
-          Cookie: "{{ login_response.cookies_string }}"
+          Content-Type: "application/x-www-form-urlencoded"
+          Cookie: "{{ login_response.set_cookie }}"
         validate_certs: no  
       register: comment_response
 
