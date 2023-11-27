@@ -4,7 +4,7 @@
 
   vars:
     rt_url: "https://rt4.int.portaone.com"
-    rt_login_url: "{{ rt_url }}/path/to/login/endpoint"
+    rt_login_url: "{{ rt_url }}"
     rt_comment_url: "{{ rt_url }}/REST/1.0/ticket/{{ ticket_id }}/comment"
     rt_username: "{{ rt_login }}"
     rt_password: "{{ rt_password }}"
@@ -22,7 +22,7 @@
 
     - name: Login to RT
       uri:
-        url: "{{ rt_login_url }}"
+        url: "{{ rt_url }}"
         method: POST
         body_format: form-urlencoded
         body:
