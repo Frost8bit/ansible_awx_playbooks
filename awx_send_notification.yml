@@ -8,7 +8,7 @@
     notification: "{{ notification }}"
     smtp_server: "mx0.portaone.com"
     smtp_user: "borland@portaone.com"
-    smtp_password: "{{ Weareleft4dead2 }}"
+    smtp_password: "zzz"
     smtp_port: 587
 
   tasks:
