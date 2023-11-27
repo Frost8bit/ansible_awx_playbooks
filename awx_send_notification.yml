@@ -1,4 +1,3 @@
----
 - name: Send notification to ticket
   hosts: localhost
   gather_facts: no
