@@ -3,6 +3,10 @@
   hosts: localhost
   gather_facts: no
 
+  vars:
+    rt_username: "{{ rt_login }}"
+    rt_password: "{{ rt_password }}"
+
   tasks:
     - name: Check if 'ticket_id' variable is defined and not empty
       fail:
