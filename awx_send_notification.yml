@@ -1,15 +1,7 @@
-- name: Reply to RT Ticket via Email
+---
+- name: Send notification to ticket
   hosts: localhost
   gather_facts: no
-
-  vars:
-    rt_email: "borland@sadasdas.com.ua"  # Replace with your RT email address
-    ticket_id: "{{ ticket_id }}"
-    notification: "{{ notification }}"
-    smtp_server: "asdasdas.com"
-    smtp_user: "asdadas"
-    smtp_password: "zzz"
-    smtp_port: 587
 
   tasks:
     - name: Check if 'notification' variable is defined and not empty
@@ -22,14 +14,20 @@
         msg: "'ticket_id' variable is not defined or empty"
       when: ticket_id is undefined or ticket_id | trim == ""
 
-    - name: Send email to RT
-      mail:
-        host: "{{ smtp_server }}"
-        port: "{{ smtp_port }}"
-        username: "{{ smtp_user }}"
-        password: "{{ smtp_password }}"
-        to: "{{ rt_email }}"
-        subject: "[Ticket #{{ ticket_id }}] Update"
-        body: "{{ notification }}"
-        secure: starttls
-      delegate_to: localhost
+    - name: Add a reply to the ticket in RT
+      uri:
+        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
+        method: POST
+        validate_certs: no
+        body_format: form-urlencoded
+        body:
+          user: borland
+          pass: test
+          content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification }}"
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+      register: response
+
+    - name: Check response from RT
+      debug:
+        var: response
