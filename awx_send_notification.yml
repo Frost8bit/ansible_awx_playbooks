@@ -43,11 +43,13 @@
       uri:
         url: "{{ rt_comment_url }}"
         method: POST
+        body_format: form-urlencoded
+        body:
+          content: "{{rt_content}}" 
         headers:
           Content-Type: "form-data"
           Referer: "{{ rt_url }}"
           Cookie: "{{ login_response.cookies_string }}"
-          Content: "{{ rt_content }}"
         validate_certs: no  
       register: comment_response
 
