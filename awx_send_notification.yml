@@ -22,8 +22,8 @@
         body_format: form-urlencoded
         body:
           content: |
-            id: ticket/{{ ticket_id }}
-            Action: comment
+            id: {{ ticket_id }}
+            Action: correspond
             Text: {{ notification }}
         headers:
           Content-Type: "application/x-www-form-urlencoded"
