@@ -8,6 +8,10 @@
     rt_comment_url: "{{ rt_url }}/REST/1.0/ticket/{{ ticket_id }}/comment"
     rt_username: "{{ rt_login }}"
     rt_password: "{{ rt_password }}"
+    rt_content: |
+            id: {{ ticket_id }}
+            Action: correspond
+            Text: {{ notification | urlencode }}
 
   tasks:
     - name: Check if 'notification' variable is defined and not empty
@@ -46,10 +50,7 @@
           Content-Type: "form-data"
           Referer: "{{ rt_url }}"
           Cookie: "{{ login_response.cookies_string }}"
-          Content: |
-            id: {{ ticket_id }}
-            Action: correspond
-            Text: {{ notification | urlencode }}
+          Content: "{{ content }}"
         validate_certs: no  
       register: comment_response
 
