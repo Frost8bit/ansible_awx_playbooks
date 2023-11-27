@@ -8,10 +8,7 @@
     rt_comment_url: "{{ rt_url }}/REST/1.0/ticket/{{ ticket_id }}/comment"
     rt_username: "{{ rt_login }}"
     rt_password: "{{ rt_password }}"
-    rt_content: |
-            id: {{ ticket_id }}
-            Action: correspond
-            Text: {{ notification | urlencode }}
+    rt_content: "id: {{ ticket_id }} \nAction: correspond \nText: {{ notification | urlencode }}"
 
   tasks:
     - name: Check if 'notification' variable is defined and not empty
