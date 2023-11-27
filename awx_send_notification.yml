@@ -12,7 +12,7 @@
       fail:
         msg: "'ticket_id' variable is not defined or empty"
       when: ticket_id is undefined or ticket_id | trim == ""
-      
+
     - name: Add a reply to the ticket in RT
       uri:
         url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
@@ -27,14 +27,9 @@
             Text: {{ notification }}
         headers:
           Content-Type: "application/x-www-form-urlencoded"
+        validate_certs: no  
       register: response
-
-
 
     - name: Check response from RT
       debug:
         var: response
-
-    - name: Debug API Response
-      debug:
-        var: response.content
