@@ -22,7 +22,7 @@
         body_format: form-urlencoded
         body:
           user: borland
-          pass: test
+          pass: {{ rt_password }}
           content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
