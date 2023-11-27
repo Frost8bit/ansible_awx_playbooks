@@ -50,7 +50,7 @@
           Content-Type: "form-data"
           Referer: "{{ rt_url }}"
           Cookie: "{{ login_response.cookies_string }}"
-          Content: "{{ content }}"
+          Content: "{{ rt_content }}"
         validate_certs: no  
       register: comment_response
 
