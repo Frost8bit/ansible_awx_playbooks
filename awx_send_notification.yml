@@ -22,7 +22,7 @@
 
     - name: Login to RT
       uri:
-        url: "{{ rt_url }}"
+        url: "{{ rt_login_url }}"
         method: POST
         body_format: form-urlencoded
         body:
@@ -33,6 +33,10 @@
         validate_certs: no  
         return_content: yes
       register: login_response
+
+    - name: Debug login response
+      debug:
+        var: login_response
 
     - name: Add a reply to the ticket in RT
       uri:
@@ -45,12 +49,12 @@
             Action: correspond
             Text: {{ notification | urlencode }}
         headers:
-          Content-Type: "form-data"
+          Content-Type: "application/x-www-form-urlencoded"
           Referer: "{{ rt_url }}"
           Cookie: "{{ login_response.cookies_string }}"
         validate_certs: no  
       register: comment_response
 
-    - name: Check response from adding comment to RT
+    - name: Debug comment response
       debug:
         var: comment_response
