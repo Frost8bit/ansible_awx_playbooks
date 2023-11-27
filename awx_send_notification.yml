@@ -24,7 +24,7 @@
           content: |
             id: {{ ticket_id }}
             Action: correspond
-            Text: {{ notification }}
+            Text: {{ notification | urlencode }}
         headers:
           Content-Type: "application/x-www-form-urlencoded"
         validate_certs: no  
@@ -32,4 +32,3 @@
 
     - name: Check response from RT
       debug:
-        var: response
