@@ -3,11 +3,11 @@
   gather_facts: no
 
   vars:
-    rt_email: "borland@netcore.com.ua"  # Replace with your RT email address
+    rt_email: "borland@sadasdas.com.ua"  # Replace with your RT email address
     ticket_id: "{{ ticket_id }}"
     notification: "{{ notification }}"
-    smtp_server: "mx0.portaone.com"
-    smtp_user: "borland@portaone.com"
+    smtp_server: "asdasdas.com"
+    smtp_user: "asdadas"
     smtp_password: "zzz"
     smtp_port: 587
 
