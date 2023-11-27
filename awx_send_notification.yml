@@ -43,15 +43,15 @@
 
     - name: Post comment to RT ticket
       uri:
-        url: "https://your-rt-instance.example.com/Ticket/Update.html?id={{ ticket_id }}&Action=Respond"
+        url: "https://rt4.int.portaone.com/Ticket/Update.html?id={{ ticket_id }}&Action=Respond"
         method: POST
         user: "{{ rt_username }}"
         password: "{{ rt_password }}"
         headers:
           Content-Type: "multipart/form-data"
         body: "{{ multipart_payload }}"
-        status_code: 200
         return_content: yes
+        validate_certs: no
       register: response
 
     - name: Debug API Response
