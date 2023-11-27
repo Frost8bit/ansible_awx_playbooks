@@ -2,6 +2,13 @@
   hosts: localhost
   gather_facts: no
 
+  vars:
+    rt_url: "https://rt4.int.portaone.com"
+    rt_login_url: "{{ rt_url }}/path/to/login/endpoint"
+    rt_comment_url: "{{ rt_url }}/REST/1.0/ticket/{{ ticket_id }}/comment"
+    rt_username: "{{ rt_login }}"
+    rt_password: "{{ rt_password }}"
+
   tasks:
     - name: Check if 'notification' variable is defined and not empty
       fail:
@@ -13,12 +20,24 @@
         msg: "'ticket_id' variable is not defined or empty"
       when: ticket_id is undefined or ticket_id | trim == ""
 
+    - name: Login to RT
+      uri:
+        url: "{{ rt_login_url }}"
+        method: POST
+        body_format: form-urlencoded
+        body:
+          username: "{{ rt_username }}"
+          password: "{{ rt_password }}"
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+        validate_certs: no  
+        return_content: yes
+      register: login_response
+
     - name: Add a reply to the ticket in RT
       uri:
-        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
+        url: "{{ rt_comment_url }}"
         method: POST
-        user: "{{ rt_login }}"
-        password: "{{ rt_password }}"
         body_format: form-urlencoded
         body:
           content: |
@@ -27,8 +46,10 @@
             Text: {{ notification | urlencode }}
         headers:
           Content-Type: "application/x-www-form-urlencoded"
-        validate_certs: no  
-      register: response
+          Referer: "{{ rt_url }}"
+          Cookie: "{{ login_response.cookies_string }}"
+      register: comment_response
 
-    - name: Check response from RT
+    - name: Check response from adding comment to RT
       debug:
+        var: comment_response
