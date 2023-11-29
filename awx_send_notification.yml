@@ -1,37 +1,34 @@
-- name: Send notification to ticket
-  hosts: localhost
-  gather_facts: no
+  - name: Send notification to ticket
+    hosts: localhost
+    gather_facts: no
 
-  vars:
-    rt_api_user: "{{ rt_login }}"
-    rt_api_password: "{{ rt_password }}"
-    encoded_notification: "{{ notification | replace('\n', '\n\n') }}"
+    vars:
 
-  tasks:
-    - name: Check if 'notification' variable is defined and not empty
-      fail:
-        msg: "'notification' variable is not defined or empty"
-      when: notification is undefined or notification | trim == ""
+    tasks:
+      - name: Check if 'notification' variable is defined and not empty
+        fail:
+          msg: "'notification' variable is not defined or empty"
+        when: notification is undefined or notification | trim == ""
 
-    - name: Check if 'ticket_id' variable is defined and not empty
-      fail:
-        msg: "'ticket_id' variable is not defined or empty"
-      when: ticket_id is undefined or ticket_id | trim == ""
+      - name: Check if 'ticket_id' variable is defined and not empty
+        fail:
+          msg: "'ticket_id' variable is not defined or empty"
+        when: ticket_id is undefined or ticket_id | trim == ""
 
-    - name: Add a reply to the ticket in RT
-      uri:
-        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
-        method: POST
-        validate_certs: no
-        body_format: form-urlencoded
-        body:
-          user: "{{ rt_api_user }}"
-          pass: "{{ rt_api_password }}"
-          content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification }}"
-        headers:
-          Content-Type: "application/x-www-form-urlencoded"
-      register: response
+      - name: Add a reply to the ticket in RT
+        uri:
+          url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
+          method: POST
+          validate_certs: no
+          body_format: form-urlencoded
+          body:
+            user: "{{ rt_login }}"
+            pass: "{{ rt_password }}"
+            content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification }}"
+          headers:
+            Content-Type: "application/x-www-form-urlencoded"
+        register: response
 
-    - name: Check response from RT
-      debug:
-        var: response
+      - name: Check response from RT
+        debug:
+          var: response
