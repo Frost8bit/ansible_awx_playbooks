@@ -1,5 +1,44 @@
-- name: Install urllib.parse collection
-  tower_module:
-    kind: collection
-    name: urllib.parse.urlencode
-    state: present
+- name: Send notification to ticket
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    rt_api_user: "{{ rt_login }}"
+    rt_api_password: "{{ rt_password }}"
+    encoded_notification: "{{ notification | urllib.parse.quote_plus }}"
+
+  tasks:
+    - name: Debug rt_api_user and rt_api_password
+      debug:
+        msg: 
+        - "rt_api_user: {{ rt_api_user }}"
+        - "rt_api_password: {{ rt_api_password }}"
+      when: rt_api_user is defined and rt_api_password is defined
+
+    - name: Check if 'notification' variable is defined and not empty
+      fail:
+        msg: "'notification' variable is not defined or empty"
+      when: notification is undefined or notification | trim == ""
+
+    - name: Check if 'ticket_id' variable is defined and not empty
+      fail:
+        msg: "'ticket_id' variable is not defined or empty"
+      when: ticket_id is undefined or ticket_id | trim == ""
+
+    - name: Add a reply to the ticket in RT
+      uri:
+        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
+        method: POST
+        validate_certs: no
+        body_format: form-urlencoded
+        body:
+          user: "{{ rt_api_user }}"
+          pass: "{{ rt_api_password }}"
+          content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ encoded_notification }}"
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+      register: response
+
+    - name: Check response from RT
+      debug:
+        var: response
