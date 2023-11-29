@@ -1,12 +1,3 @@
-- name: Empty task
-  hosts: all
-  gather_facts: no
-
-  tasks:
-  - name: dummy task
-    debug:
-      msg: "test"
-
 - name: Send IUN notification
   hosts: localhost
   gather_facts: no
