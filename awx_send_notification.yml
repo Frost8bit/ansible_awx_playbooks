@@ -5,6 +5,7 @@
   vars:
     rt_api_user: "{{ rt_login }}"
     rt_api_password: "{{ rt_password }}"
+    encoded_notification: "{{ notification | urllib.parse.quote_plus }}"
 
   tasks:
     - name: Debug rt_api_user and rt_api_password
@@ -33,7 +34,7 @@
         body:
           user: "{{ rt_api_user }}"
           pass: "{{ rt_api_password }}"
-          content: "id: {{ ticket_id }}\nAction: correspond\nText: '{{ notification | replace('\n', '\n\n') }}'"
+          content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ encoded_notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
       register: response
