@@ -6,10 +6,6 @@
     rt_api_user: "{{ rt_login }}"
     rt_api_password: "{{ rt_password }}"
 
-- name: Send notification to ticket
-  hosts: localhost
-  gather_facts: no
-
   tasks:
     - name: Check if 'notification' variable is defined and not empty
       fail:
