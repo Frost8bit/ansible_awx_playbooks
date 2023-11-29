@@ -3,7 +3,7 @@
   gather_facts: no
 
   vars:
-    skip_notification: 0
+    skip_notification: ""
 
   tasks:
     - name: Check if notification should be skipped
