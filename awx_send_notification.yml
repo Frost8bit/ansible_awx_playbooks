@@ -5,7 +5,7 @@
   vars:
     rt_api_user: "{{ rt_login }}"
     rt_api_password: "{{ rt_password }}"
-    encoded_notification: "{{ notification | replace('\n', '@@newline@@') }}"
+    encoded_notification: "{{ notification | replace('\n', '\n\n') }}"
 
   tasks:
     - name: Check if 'notification' variable is defined and not empty
@@ -27,7 +27,7 @@
         body:
           user: "{{ rt_api_user }}"
           pass: "{{ rt_api_password }}"
-          content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification }}"
+          content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification | replace('\n', '\n\n') }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
       register: response
