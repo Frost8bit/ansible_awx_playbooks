@@ -24,7 +24,7 @@
 
     - name: Add a reply to the ticket in RT
       uri:
-        url: "{{rt_api_url}}/ticket/{{ ticket_id }}/comment"
+        url: "{{ rt_api_url }}/ticket/{{ ticket_id }}/comment"
         method: POST
         validate_certs: no
         body_format: form-urlencoded
