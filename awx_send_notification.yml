@@ -1,9 +1,8 @@
 - name: Send IUN notification
-  hosts: localhost
+  hosts: all
   gather_facts: no
 
   vars:
-  "ansible_host": "localhost"
   
   tasks:
     - name: Check if notification should be skipped
