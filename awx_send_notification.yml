@@ -2,6 +2,15 @@
   hosts: localhost
   gather_facts: no
 
+  vars:
+    rt_api_url: "https://rt4.int.portaone.com/REST/1.0"
+    rt_api_user: "{{ rt_login }}"
+    rt_api_password: "{{ rt_password }}"
+
+- name: Send notification to ticket
+  hosts: localhost
+  gather_facts: no
+
   tasks:
     - name: Check if 'notification' variable is defined and not empty
       fail:
@@ -15,13 +24,13 @@
 
     - name: Add a reply to the ticket in RT
       uri:
-        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
+        url: "{{rt_api_url}}/ticket/{{ ticket_id }}/comment"
         method: POST
         validate_certs: no
         body_format: form-urlencoded
         body:
-          user: "borland"
-          pass: "{{ rt_password }}"
+          user: "{{ rt_api_user }}"
+          pass: "{{ rt_api_password }}"
           content: "id: {{ ticket_id }}\nAction: correspond\nText: {{ notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
