@@ -5,6 +5,10 @@
   vars:
 
   tasks:
+    - name: Check if notification should be skipped
+      fail: skip_notification == 1
+        msg: skip_notification=1, skipping
+
     - name: Check if 'notification' variable is defined and not empty
       fail:
         msg: "'notification' variable is not defined or empty"
