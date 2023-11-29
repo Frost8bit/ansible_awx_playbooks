@@ -3,7 +3,6 @@
   gather_facts: no
 
   vars:
-    rt_api_url: "https://rt4.int.portaone.com/REST/1.0"
     rt_api_user: "{{ rt_login }}"
     rt_api_password: "{{ rt_password }}"
 
@@ -24,7 +23,7 @@
 
     - name: Add a reply to the ticket in RT
       uri:
-        url: "{{ rt_api_url }}/ticket/{{ ticket_id }}/comment"
+        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
         method: POST
         validate_certs: no
         body_format: form-urlencoded
