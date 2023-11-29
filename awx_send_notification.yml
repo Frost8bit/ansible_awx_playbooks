@@ -16,15 +16,17 @@
       when: ticket_id is undefined or ticket_id | trim == ""
 
     - name: Add a reply to the ticket in RT
+      set_fact:
+        rt_ticket_id: "{{ ticket_id | regex_replace('^TT', '') }}"
       uri:
-        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ ticket_id }}/comment"
+        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ rt_ticket_id }}/comment"
         method: POST
         validate_certs: no
         body_format: form-urlencoded
         body:
           user: "{{ rt_login }}"
           pass: "{{ rt_password }}"
-          content: "id: {{ ticket_id | regex_replace('^TT', '') }}\nAction: correspond\nText: {{ notification }}"
+          content: "id: {{ rt_ticket_id }}\nAction: correspond\nText: {{ notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
       register: response
