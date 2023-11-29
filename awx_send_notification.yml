@@ -1,63 +1,66 @@
-- name: Send IUN notification
+---
+- name: Empty task
   hosts: all
   gather_facts: no
-
-  vars:
-
+  tasks:
+    - name: dummy task
+      msg: test
+- name: Send IUN notification
+  hosts: localhost
+  gather_facts: no
+  vars: null
   tasks:
     - name: Check if notification should be skipped
       fail:
-        msg: "skip_notification=1, skipping"
+        msg: skip_notification=1, skipping
       when: skip_notification | default(0) == 1
       delegate_to: localhost
-
     - name: Check if 'notification' variable is defined and not empty
       fail:
         msg: "'notification' variable is not defined or empty"
       when: notification is undefined or notification | trim == ""
       delegate_to: localhost
-
     - name: Check if 'ticket_id' variable is defined and not empty
       fail:
         msg: "'ticket_id' variable is not defined or empty"
       when: ticket_id is undefined or ticket_id | trim == ""
       delegate_to: localhost
-
     - name: Set API target
       set_fact:
-        api_target: "{{ 'RT' if ticket_id is match('^TT[0-9]{1,6}$') else 'YT' if ticket_id is match('^CSUP-[0-9]+$') else 'Unknown' }}"
+        api_target: "{{ 'RT' if ticket_id is match('^TT[0-9]{1,6}$') else 'YT' if
+          ticket_id is match('^CSUP-[0-9]+$') else 'Unknown' }}"
       delegate_to: localhost
-
     - name: Set RT ticket_id
       set_fact:
         rt_ticket_id: "{{ ticket_id | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
       delegate_to: localhost
-
     - name: Send reply to the ticket in RT
       uri:
-        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ rt_ticket_id }}/comment"
+        url: https://rt4.int.portaone.com/REST/1.0/ticket/{{ rt_ticket_id }}/comment
         method: POST
         validate_certs: no
         body_format: form-urlencoded
         body:
           user: "{{ rt_login }}"
           pass: "{{ rt_password }}"
-          content: "id: {{ rt_ticket_id }}\nAction: correspond\nText: {{ notification }}"
+          content: |-
+            id: {{ rt_ticket_id }}
+            Action: correspond
+            Text: {{ notification }}
         headers:
-          Content-Type: "application/x-www-form-urlencoded"
+          Content-Type: application/x-www-form-urlencoded
       register: response
       when: api_target == 'RT'
       delegate_to: localhost
-
     - name: Check response from RT
       debug:
         var: response
       when: api_target == 'RT'
       delegate_to: localhost
-
     - name: Add a reply to the ticket in YT
       debug:
-        msg: "This is a placeholder for YouTrack notification to ticket_id: {{ ticket_id }}"
+        msg: "This is a placeholder for YouTrack notification to ticket_id: {{ ticket_id
+          }}"
       when: api_target == 'YT'
       delegate_to: localhost
