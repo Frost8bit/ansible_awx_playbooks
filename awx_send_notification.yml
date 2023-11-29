@@ -15,30 +15,30 @@
         msg: "'notification' variable is not defined or empty"
       when: notification is undefined or notification | trim == ""
 
-    - name: Check if 'ticket_id' variable is defined and not empty
+    - name: Check if 'ticket' variable is defined and not empty
       fail:
-        msg: "'ticket_id' variable is not defined or empty"
-      when: ticket_id is undefined or ticket_id | trim == ""
+        msg: "'ticket' variable is not defined or empty"
+      when: ticket is undefined or ticket | trim == ""
 
     - name: Set API target
       set_fact:
-        api_target: "{{ 'RT' if ticket_id is match('^TT[0-9]{1,6}$') else 'YT' if ticket_id is match('^CSUP-[0-9]+$') else 'Unknown' }}"
+        api_target: "{{ 'RT' if ticket is match('^TT[0-9]{1,6}$') else 'YT' if ticket is match('^CSUP-[0-9]+$') else 'Unknown' }}"
 
-    - name: Set RT ticket_id
+    - name: Set RT ticket
       set_fact:
-        rt_ticket_id: "{{ ticket_id | regex_replace('^TT', '') }}"
+        rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
     - name: Send reply to the ticket in RT
       uri:
-        url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ rt_ticket_id }}/comment"
+        url: "{{ rt_url }}/REST/1.0/ticket/{{ rt_ticket }}/comment"
         method: POST
         validate_certs: no
         body_format: form-urlencoded
         body:
           user: "{{ rt_login }}"
           pass: "{{ rt_password }}"
-          content: "id: {{ rt_ticket_id }}\nAction: correspond\nText: {{ notification }}"
+          content: "id: {{ rt_ticket }}\nAction: correspond\nText: {{ notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
       register: response
@@ -51,5 +51,5 @@
 
     - name: Add a reply to the ticket in YT
       debug:
-        msg: "This is a placeholder for YouTrack notification to ticket_id: {{ ticket_id }}"
+        msg: "This is a placeholder for YouTrack notification to ticket: {{ ticket }}"
       when: api_target == 'YT'
