@@ -6,8 +6,9 @@
 
   tasks:
     - name: Check if notification should be skipped
-      fail: skip_notification == 1
-        msg: skip_notification=1, skipping
+      fail: 
+        msg: "skip_notification=1, skipping"
+      when: skip_notification == 1 
 
     - name: Check if 'notification' variable is defined and not empty
       fail:
