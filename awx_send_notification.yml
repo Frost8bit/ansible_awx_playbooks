@@ -5,7 +5,7 @@
   vars:
     rt_api_user: "{{ rt_login }}"
     rt_api_password: "{{ rt_password }}"
-    encoded_notification: "{{ notification | urllib.parse.quote_plus }}"
+    encoded_notification: "{{ notification | replace('\n', '@@newline@@') }}"
 
   tasks:
     - name: Debug rt_api_user and rt_api_password
