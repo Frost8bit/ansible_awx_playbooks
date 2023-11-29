@@ -15,9 +15,12 @@
         msg: "'ticket_id' variable is not defined or empty"
       when: ticket_id is undefined or ticket_id | trim == ""
 
-    - name: Add a reply to the ticket in RT
+    - name: Set RT ticket_id
       set_fact:
         rt_ticket_id: "{{ ticket_id | regex_replace('^TT', '') }}"
+      when: ticket_id is match("^TT[0-9]{1,6}$")
+
+    - name: Send reply to the ticket in RT
       uri:
         url: "https://rt4.int.portaone.com/REST/1.0/ticket/{{ rt_ticket_id }}/comment"
         method: POST
