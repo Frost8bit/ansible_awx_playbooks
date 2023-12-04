@@ -44,6 +44,20 @@
       register: response
       when: api_target == 'RT'
 
+    - name: Set status of RT ticket to 'open'
+      uri:
+        url: "{{ rt_url }}/REST/1.0/ticket/{{ rt_ticket }}/edit"
+        method: POST
+        validate_certs: no
+        body_format: form-urlencoded
+        body:
+          user: "{{ rt_login }}"
+          pass: "{{ rt_password }}"
+          content: "id: {{ rt_ticket }}\nStatus: open"
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+      when: api_target == 'RT'
+
     - name: Check response from RT
       debug:
         var: response
