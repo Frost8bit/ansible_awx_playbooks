@@ -33,6 +33,10 @@
       debug:
         var: notification
 
+    - name: Debug rt_ticket variable
+      debug:
+        var: rt_ticket
+
     - name: Send reply to the ticket in RT
       uri:
         url: "{{ rt_url }}/REST/1.0/ticket/{{ rt_ticket }}/comment"
