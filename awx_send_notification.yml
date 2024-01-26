@@ -46,7 +46,7 @@
         body:
           user: "{{ rt_login }}"
           pass: "{{ rt_password }}"
-          content: "id: {{ rt_ticket }}\nAction: correspond\nText: {{ notification }}"
+          content: "id: {{ rt_ticket }}\nAction: correspond\nText: { notification }"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
       register: response
