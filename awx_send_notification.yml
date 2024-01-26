@@ -29,6 +29,10 @@
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
+    - name: Debug notification variable
+      debug:
+        var: notification
+
     - name: Send reply to the ticket in RT
       uri:
         url: "{{ rt_url }}/REST/1.0/ticket/{{ rt_ticket }}/comment"
