@@ -29,6 +29,10 @@
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
+    - name: Debug cmd_output content
+      debug:
+        var: cmd_output
+
     - name: Replace cmd_output variable with actual value in notification
       set_fact:
         updated_notification: "{{ notification | replace('{{ cmd_output }}', cmd_output) }}"
