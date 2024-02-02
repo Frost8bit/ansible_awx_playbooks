@@ -35,8 +35,8 @@
 
     - name: Replace cmd_output variable with actual value in notification
       set_fact:
-        updated_notification: "{{ notification | replace('{{ cmd_output }}', cmd_output) }}"
-      when: cmd_output is defined
+        updated_notification: "{{ notification | replace('{{ cmd_output }}', lvl_1.cmd_output) }}"
+      when: lvl_1.cmd_output is defined
 
     - name: Replace cmd_aux_output variable with actual value in notification
       set_fact:
