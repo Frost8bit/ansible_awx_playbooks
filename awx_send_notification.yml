@@ -22,20 +22,16 @@
 
     - name: Set API target
       set_fact:
-        api_target: "{{ 'RT' if ticket is match('^TT[0-9]{1,6}$') else 'YT' if ticket is match('^CSUP-[0-9]+$') else 'Unknown' }}"
+        api_target: "{{ 'RT' if ticket is match('^TT[0-9]{1,9}$') else 'YT' if ticket is match('^CSUP-[0-9]+$') else 'Unknown' }}"
 
     - name: Set RT ticket
       set_fact:
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
-    - name: Debug notification variable
-      debug:
-        var: notification
-
-    - name: Debug rt_ticket variable
-      debug:
-        var: rt_ticket
+    - name: Replace variable with actual value in notification
+      set_fact:
+        updated_notification: "{{ notification | replace('{{ rt_ticket }}', rt_ticket) }}"
 
     - name: Send reply to the ticket in RT
       uri:
@@ -46,7 +42,7 @@
         body:
           user: "{{ rt_login }}"
           pass: "{{ rt_password }}"
-          content: "id: {{ rt_ticket }}\nAction: correspond\nText: {{ notification }}"
+          content: "id: {{ rt_ticket }}\nAction: correspond\nText: {{ updated_notification  }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
       register: response
@@ -73,5 +69,5 @@
 
     - name: Add a reply to the ticket in YT
       debug:
-        msg: "This is a placeholder for YouTrack notification to ticket: {{ ticket }}"
+        msg: "YouTrack notifications are not implemented yet"
       when: api_target == 'YT'
