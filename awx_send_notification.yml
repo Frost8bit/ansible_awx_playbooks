@@ -31,7 +31,7 @@
 
     - name: Debug cmd_output content
       debug:
-        var: cmd_output
+        var: out_prefix.cmd_output
 
     - name: Replace cmd_output variable with actual value in notification
       set_fact:
