@@ -29,9 +29,9 @@
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
-    - name: Replace variable with actual value in notification
+    - name: Replace cmd_output variable with actual value in notification
       set_fact:
-        updated_notification: "{{ notification | replace('{{ rt_ticket }}', rt_ticket) }}"
+        updated_notification: "{{ notification | replace('{{ cmd_output }}', cmd_output) }}"
 
     - name: Send reply to the ticket in RT
       uri:
@@ -42,7 +42,7 @@
         body:
           user: "{{ rt_login }}"
           pass: "{{ rt_password }}"
-          content: "id: {{ rt_ticket }}\nAction: correspond\nText: {{ updated_notification  }}"
+          content: "id: {{ rt_ticket }}\nAction: correspond\nText: {{ notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
       register: response
