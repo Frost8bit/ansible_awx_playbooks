@@ -1,0 +1,94 @@
+- hosts: all
+  name: run commands from variables
+  gather_facts: no
+  vars:
+    def_lvl: "lvl_none"
+    cmd_var: "command"
+    aux_cmd_var: "aux_command"
+    pipefail_cmd: ""
+    exit_on_stderr: true
+    
+
+  tasks:
+    - name: enable usage of pipefail
+      set_fact:
+        pipefail_cmd: "set -o pipefail; "
+      when: use_pipefail|default(0) == 1
+
+    - name: skip STDERR checking
+      set_fact:
+        exit_on_stderr: false
+      when: check_stderr|default(1) != 1
+
+
+    - name: define prefixed
+      set_fact:
+        cmd_var: "{{ cmd_prefix }}_command"
+        aux_cmd_var: "{{ cmd_prefix }}_aux_command"
+      when: cmd_prefix is defined
+
+    - name: define non-prefixed
+      set_fact:
+        cmd_prefix: "{{ def_lvl }}"
+      when: cmd_prefix is not defined
+
+    - name: define commands
+      set_fact:
+        "{{ cmd_prefix }}":
+            cmd_text: "{{ vars[cmd_var] if vars[cmd_var] is defined else '' }}"
+            aux_cmd_text: "{{ vars[aux_cmd_var] if vars[aux_cmd_var] is defined else '' }}"
+
+    - name: show vars
+      debug: var="{{ cmd_prefix }}"
+
+    - name: exit on undef cmd
+      fail: msg="XXX{{':'}} Args error{{':'}} '{{ cmd_var }}' is undefined"
+      when: vars[cmd_var] is not defined
+
+    - name: run command
+      shell:
+         cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['cmd_text'] }}"
+         executable: /bin/bash
+      when: vars[cmd_var] is defined
+      register: cmd_result
+
+     - name: run aux command
+      shell:
+         cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['aux_cmd_text'] }}"
+         executable: /bin/bash
+      when:
+        - vars[cmd_var] is defined
+        - vars[aux_cmd_var] is defined
+      register: aux_cmd_result     
+
+    - name: fail task if sterr not empty
+      fail: msg="XXX{{':'}} STDERR is not empty. If it is expected, set 'check_stderr{{':'}} 0' for IUN, or use redirect of stderr (like 2>/dev/null) "
+      when: exit_on_stderr and cmd_result.stderr != ''
+      
+    - name: out_xxx
+      set_fact:
+         xxx :
+           cmd_output : "{{ cmd_result.stdout if cmd_result.stdout is defined else '' }}"
+           aux_cmd_output : "{{ aux_cmd_result.stdout if aux_cmd_result.stdout is defined else '' }}"
+
+
+    - name: transfer facts to pass down to the next Job template
+      set_fact:
+         "{{ cmd_prefix }}": "{{ vars[cmd_prefix] | combine(xxx) }}"
+
+### "with dict" can't be used due to BUG 38075
+#         "{{ cmd_prefix }}": "{{ vars[cmd_prefix] | combine({item.key : item.value}) }}"
+#      with_dict:
+#         - cmd_output : "{{ cmd_result.stdout if cmd_result.stdout is defined else '' }}"
+#         - output2 : "{{ result2.stdout if result2.stdout is defined else '' }}"
+
+
+    - name: transfer data to pass down to the next Job template
+      set_stats:
+        data:
+           "{{ cmd_prefix }}": "{{ vars[cmd_prefix] }}"
+        per_host: no  # <-- important
+
+    - name: show res
+      debug: var="{{ cmd_prefix }}"
+
