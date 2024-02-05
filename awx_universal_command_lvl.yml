@@ -52,7 +52,7 @@
       when: vars[cmd_var] is defined
       register: cmd_result
 
-     - name: run aux command
+    - name: run aux command
       shell:
          cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['aux_cmd_text'] }}"
          executable: /bin/bash
