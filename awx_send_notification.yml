@@ -29,13 +29,13 @@
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
-    - name: Use cmd_prefix in the third playbook
-      debug:
-        var: cmd_prefix
+    - name: Detect and set new variable based on passed variable
+      set_fact:
+        lvl: "{{ lvl_1 if lvl_1 is defined else lvl_2 if lvl_2 is defined else lvl_3 if lvl_3 is defined else 'default_value' }}"
 
     - name: Debug cmd_output content
       debug:
-        var: out_prefix.cmd_output
+        var: lvl.cmd_output
 
     - name: Replace cmd_output variable with actual value in notification
       set_fact:
