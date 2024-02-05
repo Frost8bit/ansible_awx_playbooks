@@ -29,9 +29,9 @@
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
-    - name: Use out_prefix in the third playbook
+    - name: Use cmd_prefix in the third playbook
       debug:
-        var: hostvars['localhost']['out_prefix']
+        var: cmd_prefix
 
     - name: Debug cmd_output content
       debug:
