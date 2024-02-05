@@ -45,9 +45,11 @@
       debug:
          var: hostvars[inventory_hostname][out_prefix]
 
-    - name: Set out_prefix as a host variable
-      set_fact:
-        ansible_hostvars: "{{ out_prefix }}"
+    - name: transfer data to pass down to the next Job template
+      set_stats:
+        data:
+           "{{ cmd_prefix }}": "{{ vars[cmd_prefix] }}"
+        per_host: no  # <-- important
 
     - name: exit on undef conditions
       fail: msg="XXX{{':'}} Args error{{':'}} neither '{{ var_fc }}' nor '{{ var_sc }}' are defined"
