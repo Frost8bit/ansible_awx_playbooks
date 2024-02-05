@@ -39,13 +39,10 @@
 
     - name: Replace cmd_output variable with actual value in notification
       set_fact:
-        updated_notification: "{{ notification | replace('{{ cmd_output }}', lvl.cmd_output) }}"
-      when: lvl.cmd_output is defined
-
-    - name: Replace aux_cmd_output variable with actual value in notification
-      set_fact:
-        updated_notification: "{{ notification | replace('{{ aux_cmd_output }}', lvl.aux_cmd_output) }}"
-      when: lvl.aux_cmd_output is defined      
+        updated_notification: "{{ notification | 
+          replace('{{ cmd_output }}', lvl.cmd_output | default('')) | 
+          replace('{{ aux_cmd_output }}', lvl.aux_cmd_output | default('')) }}"
+      when: lvl.cmd_output is defined or lvl.aux_cmd_output is defined   
 
     - name: Send reply to the ticket in RT
       uri:
@@ -56,7 +53,7 @@
         body:
           user: "{{ rt_login }}"
           pass: "{{ rt_password }}"
-          content: "id: {{ rt_ticket }}\nAction: correspond\nText: {{ notification }}"
+          content: "id: {{ rt_ticket }}\nAction: correspond\nText: {{ updated_notification }}"
         headers:
           Content-Type: "application/x-www-form-urlencoded"
       register: response
