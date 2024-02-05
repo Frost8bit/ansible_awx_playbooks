@@ -29,7 +29,7 @@
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
-    - name: Get level
+    - name: Get lvl output
       set_fact:
         lvl: "{{ lvl_1 if lvl_1 is defined else lvl_2 if lvl_2 is defined else lvl_3 if lvl_3 is defined else 'Unknown' }}"
 
@@ -41,6 +41,11 @@
       set_fact:
         updated_notification: "{{ notification | replace('{{ cmd_output }}', lvl.cmd_output) }}"
       when: lvl.cmd_output is defined
+
+    - name: Replace aux_cmd_output variable with actual value in notification
+      set_fact:
+        updated_notification: "{{ notification | replace('{{ aux_cmd_output }}', lvl.aux_cmd_output) }}"
+      when: lvl.aux_cmd_output is defined      
 
     - name: Send reply to the ticket in RT
       uri:
