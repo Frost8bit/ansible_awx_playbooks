@@ -29,6 +29,24 @@
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
+    - name: Use out_prefix in the third playbook
+      debug:
+        var: hostvars['localhost']['out_prefix']
+
+    - name: Debug cmd_output content
+      debug:
+        var: out_prefix.cmd_output
+
+    - name: Replace cmd_output variable with actual value in notification
+      set_fact:
+        updated_notification: "{{ notification | replace('{{ cmd_output }}', lvl_1.cmd_output) }}"
+      when: lvl_1.cmd_output is defined
+
+    - name: Replace cmd_aux_output variable with actual value in notification
+      set_fact:
+        updated_notification: "{{ notification | replace('{{ cmd_aux_output }}', cmd_aux_output) }}"
+      when: cmd_aux_output is defined
+
     - name: Send reply to the ticket in RT
       uri:
         url: "{{ rt_url }}/REST/1.0/ticket/{{ rt_ticket }}/comment"
