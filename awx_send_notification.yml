@@ -42,6 +42,7 @@
         updated_notification: "{{ notification | 
           replace('{{ cmd_output }}', lvl.cmd_output | default('')) | 
           replace('{{ aux_cmd_output }}', lvl.aux_cmd_output | default('')) }}"
+          replace('\\n', '\\n\\n') }}"
       when: lvl.cmd_output is defined or lvl.aux_cmd_output is defined   
 
     - name: Send reply to the ticket in RT
