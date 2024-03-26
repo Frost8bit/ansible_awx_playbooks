@@ -41,6 +41,11 @@
           replace('\n', ' \n ') }}"
       when: lvl.cmd_output is defined or lvl.aux_cmd_output is defined
 
+    - name: Set updated_notification = notification when cmd_output/aux_cmd_output are not defined
+      set_fact:
+        updated_notification: "{{ notification }}"
+      when: lvl.cmd_output is undefined and lvl.aux_cmd_output is undefined
+
     - name: Send reply to the ticket in RT
       uri:
         url: "{{ rt_url }}/REST/1.0/ticket/{{ rt_ticket }}/comment"
