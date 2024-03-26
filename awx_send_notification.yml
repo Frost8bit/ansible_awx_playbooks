@@ -80,9 +80,8 @@
         url: "{{ yt_url }}/api/issues/{{ ticket }}/comments"
         method: POST
         validate_certs: no
-        body:
-          body: '{"text":"{{ updated_notification }}"}'
-          body_format: json
+        body: '{"text":"{{ updated_notification }}"}'
+        body_format: json
         headers:
           Content-Type: "application/json"
           Accept: "application/json"
