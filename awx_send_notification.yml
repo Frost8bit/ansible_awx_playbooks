@@ -122,6 +122,15 @@
       register: issue_details
       when: ticket is defined and subject is defined
 
+    - name: Debug issue_details
+      debug:
+        var: issue_details
+
+    - name: Debug customFields from issue_details
+      debug:
+        msg: "Field ID: {{ item.id }}, Field Name: {{ item.name }}, Value Name: {{ item.value.name if item.value is defined else 'N/A' }}"
+      loop: "{{ issue_details.json.customFields }}"
+
     - name: Create a new ticket
       uri:
         url: "{{ yt_url }}/api/issues"
