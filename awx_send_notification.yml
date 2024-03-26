@@ -113,6 +113,7 @@
       uri:
         url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name))"
         method: GET
+        validate_certs: no
         headers:
           Authorization: "Bearer {{ yt_api_token }}"
           Accept: "application/json"
@@ -126,6 +127,7 @@
       uri:  # <-- This should be `uri`, not `url`
         url: "{{ yt_url }}/api/issues"
         method: POST
+        validate_certs: no
         body_format: json
         headers:
           Authorization: "Bearer {{ yt_api_token }}"
