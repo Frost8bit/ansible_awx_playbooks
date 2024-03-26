@@ -128,8 +128,9 @@
 
     - name: Debug customFields from issue_details
       debug:
-        msg: "Field ID: {{ item.id }}, Field Name: {{ item.name }}, Value Name: {{ item.value.name if item.value is defined else 'N/A' }}"
+        msg: "Field ID: {{ item.id }}, Field Name: {{ item.name }}, Value Name: {{ (item.value.name if item.value is mapping and item.value.name is defined else item.value) | default('N/A') }}"
       loop: "{{ issue_details.json.customFields }}"
+      when: issue_details.json.customFields is defined
 
     - name: Create a new ticket
       uri:
