@@ -148,7 +148,7 @@
               "id": "{{ project_id }}"
             },
             "summary": "{{ subject }}",
-            "description": "{{ updated_notification }}",
+            description: "{{ updated_notification | replace('\n', '\\n') }}",
             "customFields": [
               {
                 "id": "{{ priority_id }}",
@@ -179,7 +179,6 @@
                   "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
                 }
               }
-              # For MultiUserIssueCustomField, ensure you're using the expected format
             ]
           }
         status_code: 200
