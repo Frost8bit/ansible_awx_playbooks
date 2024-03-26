@@ -162,23 +162,24 @@
                 "id": "{{ assignee_id }}",
                 "$type": "SingleUserIssueCustomField",
                 "value": {
-                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.id') | first }}"
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
                 }
               },
               {
                 "id": "{{ support_group_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
-                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.id') | first }}"
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
                 }
               },
               {
                 "id": "{{ customer_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
-                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.id') | first }}"
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
                 }
               }
+              # For MultiUserIssueCustomField, ensure you're using the expected format
             ]
           }
         status_code: 200
