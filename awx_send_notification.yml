@@ -153,18 +153,12 @@
   register: response
   when: subject is defined and issue_details is defined 
 
-    - name: Check response from RT
-      debug:
-        var: response
-      when: api_target == 'RT'
+#    - name: Check response from RT
+#      debug:
+#        var: response
+#      when: api_target == 'RT'
 
-    - name: Check response from YT
-      debug:
-        var: response
-      when: api_target == 'YT'
-      
-
-    - name: Add a reply to the ticket in YT
-      debug:
-        msg: "YouTrack notifications are not implemented yet"
-      when: api_target == 'YT'
+#    - name: Check response from YT
+#      debug:
+#        var: response
+#      when: api_target == 'YT'
