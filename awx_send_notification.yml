@@ -114,7 +114,7 @@
         url: "{{ yt_url }}api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name))"
         method: GET
         headers:
-          Authorization: "Bearer {{ yt_token }}"
+          Authorization: "Bearer {{ yt_api_token }}"
           Accept: "application/json"
         return_content: yes
         status_code: 200
@@ -128,7 +128,7 @@
         method: POST
         body_format: json
         headers:
-          Authorization: "Bearer {{ yt_token }}"
+          Authorization: "Bearer {{ yt_api_token }}"
           Content-Type: "application/json"
           Accept: "application/json"
         body:
