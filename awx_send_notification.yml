@@ -119,39 +119,40 @@
       when: ticket is defined and subject is defined
 
     - name: Create a new ticket
-      url: "{{ yt_url }}api/issues"
-      method: POST
-      body_format: json
-      headers:
-        Authorization: "Bearer {{ yt_token }}"
-        Content-Type: "application/json"
-        Accept: "application/json"
-      body:
-        project: 
-          id: "{{ project_id }}" #81-193 for Prod, 81-178 for Staging
-        summary: "{{ subject }}"
-        description: "{{ updated_notification }}"
-        customFields:
-          - id: "{{ priority_id }}" # 82-1420 for Staging
-            $type: "SingleEnumIssueCustomField"
-            value:
-              name: "Low"
-              $type: "EnumBundleElement"
-          - id: "{{ assignee_id }}" # Assignee ID, e.g., 83-199
-            $type: "SingleUserIssueCustomField"
-            value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value') | first }}"
-          - id: "{{ support_group_id }}" # Support Group ID, e.g., 146-7
-            $type: "SingleGroupIssueCustomField"
-            value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value') | first }}"
-          - id: "{{ customer_id }}" # Customer ID, e.g., 146-9
-            $type: "SingleGroupIssueCustomField"
-            value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value') | first }}"
-          - id: "{{ requester_id }}" # Requester ID, e.g., 83-208
-            $type: "MultiUserIssueCustomField"
-            value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first }}"
+      uri:  # <-- This should be `uri`, not `url`
+        url: "{{ yt_url }}api/issues"
+        method: POST
+        body_format: json
+        headers:
+          Authorization: "Bearer {{ yt_token }}"
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body:
+          project: 
+            id: "{{ project_id }}" #81-193 for Prod, 81-178 for Staging
+          summary: "{{ subject }}"
+          description: "{{ updated_notification }}"
+          customFields:
+            - id: "{{ priority_id }}" # 82-1420 for Staging
+              $type: "SingleEnumIssueCustomField"
+              value:
+                name: "Low"
+                $type: "EnumBundleElement"
+            - id: "{{ assignee_id }}" # Assignee ID, e.g., 83-199
+              $type: "SingleUserIssueCustomField"
+              value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value') | first }}"
+            - id: "{{ support_group_id }}" # Support Group ID, e.g., 146-7
+              $type: "SingleGroupIssueCustomField"
+              value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value') | first }}"
+            - id: "{{ customer_id }}" # Customer ID, e.g., 146-9
+              $type: "SingleGroupIssueCustomField"
+              value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value') | first }}"
+            - id: "{{ requester_id }}" # Requester ID, e.g., 83-208
+              $type: "MultiUserIssueCustomField"
+              value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first }}"
         status_code: [200, 201]
       register: response
-      when: subject is defined and issue_details is defined 
+      when: subject is defined and issue_details is defined
 
     - name: Check response from RT
       debug:
