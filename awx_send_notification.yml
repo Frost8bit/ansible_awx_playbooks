@@ -119,12 +119,11 @@
           Accept: "application/json"
         return_content: yes
         status_code: 200
-        validate_certs: no
       register: issue_details
       when: ticket is defined and subject is defined
 
     - name: Create a new ticket
-      uri:  # <-- This should be `uri`, not `url`
+      uri:
         url: "{{ yt_url }}/api/issues"
         method: POST
         validate_certs: no
@@ -156,7 +155,7 @@
             - id: "{{ requester_id }}" # Requester ID, e.g., 83-208
               $type: "MultiUserIssueCustomField"
               value: "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first }}"
-        status_code: [200, 201]
+        status_code: 200
       register: response
       when: subject is defined and issue_details is defined
 
