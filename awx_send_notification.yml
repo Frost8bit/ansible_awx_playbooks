@@ -111,7 +111,7 @@
 
     - name: Fetch update TT details
       uri:
-        url: "{{ yt_url }}api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name))"
+        url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name))"
         method: GET
         headers:
           Authorization: "Bearer {{ yt_api_token }}"
@@ -124,7 +124,7 @@
 
     - name: Create a new ticket
       uri:  # <-- This should be `uri`, not `url`
-        url: "{{ yt_url }}api/issues"
+        url: "{{ yt_url }}/api/issues"
         method: POST
         body_format: json
         headers:
