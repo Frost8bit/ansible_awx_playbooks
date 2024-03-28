@@ -43,7 +43,7 @@
 
     - name: Set updated_notification when cmd_output/aux_cmd_output are not defined
       set_fact:
-        updated_notification: "{{ notification }}"
+        updated_notification: "{{ notification | replace('\n', ' \n ') }}"
       when: lvl.cmd_output is undefined and lvl.aux_cmd_output is undefined
 
     - name: Send reply to the ticket in RT
