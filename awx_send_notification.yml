@@ -41,9 +41,9 @@
           replace('\n', ' \n ') }}"
       when: lvl.cmd_output is defined or lvl.aux_cmd_output is defined
 
-    - name: Set updated_notification = notification when cmd_output/aux_cmd_output are not defined
+    - name: Set updated_notification when cmd_output/aux_cmd_output are not defined
       set_fact:
-        updated_notification: "{{ notification }}"
+        updated_notification: "{{ notification | replace('\n', ' \n ') }}"
       when: lvl.cmd_output is undefined and lvl.aux_cmd_output is undefined
 
     - name: Send reply to the ticket in RT
@@ -148,7 +148,7 @@
               "id": "{{ project_id }}"
             },
             "summary": "{{ subject }}",
-            "description": "{{ updated_notification }}",
+            "description": "{{ updated_notification | replace('\n', '\\n') }}",
             "customFields": [
               {
                 "id": "{{ priority_id }}",
