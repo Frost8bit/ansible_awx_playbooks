@@ -148,7 +148,7 @@
               "id": "{{ project_id }}"
             },
             "summary": "{{ subject }}",
-            "description": "{{ updated_notification | replace('\n', '\\n') }}",
+            "description": "{{ updated_notification | regex_replace('\r?\n', '\\n') }}",
             "customFields": [
               {
                 "id": "{{ priority_id }}",
