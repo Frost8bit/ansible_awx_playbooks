@@ -75,115 +75,59 @@
           Content-Type: "application/x-www-form-urlencoded"
       when: api_target == 'RT'
 
-    - name: Send reply to the ticket in YT
-      uri:
-        url: "{{ yt_url }}/api/issues/{{ ticket }}/comments"
-        method: POST
-        validate_certs: no
-        body: "{{ {'text': updated_notification + '\n @reply'} | to_json }}"
-        body_format: json
-        headers:
-          Content-Type: "application/json"
-          Accept: "application/json"
-          Authorization: "Bearer {{ yt_api_token }}"
-        status_code: [200]  
-      register: response
-      when: api_target == 'YT' and subject is undefined or subject | trim == ""
-
-    - name: Set status of YT ticket to 'Open'
-      uri:
-        url: "{{ yt_url }}/api/issues/{{ ticket }}"
-        method: POST
-        validate_certs: no
-        body_format: json
-        body:
-          customFields:
-            - id: "82-1398" #should be checked for prod YT
-              $type: "StateIssueCustomField"
-              value:
-                name: "Open"
-                $type: "StateBundleElement"
-        headers:
-          Content-Type: "application/json"
-          Authorization: "Bearer {{ yt_api_token }}"
-        status_code: [200]
-      when: api_target == 'YT' and subject is undefined or subject | trim == ""
-
-    - name: Fetch update TT details
-      uri:
-        url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name))"
-        method: GET
-        validate_certs: no
-        headers:
-          Authorization: "Bearer {{ yt_api_token }}"
-          Accept: "application/json"
-        return_content: yes
-        status_code: 200
-      register: issue_details
-      when: ticket is defined and subject is defined
-
-    - name: Debug issue_details
-      debug:
-        var: issue_details
-
-    - name: Debug customFields from issue_details
-      debug:
-        msg: "Field ID: {{ item.id }}, Field Name: {{ item.name }}, Value Name: {{ (item.value.name if item.value is mapping and item.value.name is defined else item.value) | default('N/A') }}"
-      loop: "{{ issue_details.json.customFields }}"
-      when: issue_details.json.customFields is defined
-
-    - name: Create a new ticket
-      uri:
-        url: "{{ yt_url }}/api/issues"
-        method: POST
-        validate_certs: no
-        body_format: json
-        headers:
-          Authorization: "Bearer {{ yt_api_token }}"
-          Content-Type: "application/json"
-          Accept: "application/json"
-        body: >-
-          {
-            "project": {
-              "id": "{{ project_id }}"
-            },
-            "summary": "{{ subject }}",
-            "description": "{{ updated_notification | regex_replace('\r?\n', '\\n') }}",
-            "customFields": [
-              {
-                "id": "{{ priority_id }}",
-                "$type": "SingleEnumIssueCustomField",
-                "value": {
-                  "name": "Low",
-                  "$type": "EnumBundleElement"
-                }
-              },
-              {
-                "id": "{{ assignee_id }}",
-                "$type": "SingleUserIssueCustomField",
-                "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
-                }
-              },
-              {
-                "id": "{{ support_group_id }}",
-                "$type": "SingleGroupIssueCustomField",
-                "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
-                }
-              },
-              {
-                "id": "{{ customer_id }}",
-                "$type": "SingleGroupIssueCustomField",
-                "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
-                }
+  - name: Create a new ticket
+    uri:
+      url: "{{ yt_url }}/api/issues"
+      method: POST
+      validate_certs: no
+      headers:
+        Authorization: "Bearer {{ yt_api_token }}"
+        Content-Type: "application/json"
+        Accept: "application/json"
+      body_format: json
+      body: |
+        {
+          "project": {
+            "id": "{{ project_id }}"
+          },
+          "summary": "{{ subject }}",
+          "description": "{{ updated_notification | regex_replace('[\\r\\n]', '\\\\n') }}",
+          "customFields": [
+            {
+              "id": "{{ priority_id }}",
+              "$type": "SingleEnumIssueCustomField",
+              "value": {
+                "name": "Low",
+                "$type": "EnumBundleElement"
               }
-            ]
-          }
-        status_code: 200
-      register: response
-      when: subject is defined and issue_details is defined
+            },
+            {
+              "id": "{{ assignee_id }}",
+              "$type": "SingleUserIssueCustomField",
+              "value": {
+                "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
+              }
+            },
+            {
+              "id": "{{ support_group_id }}",
+              "$type": "SingleGroupIssueCustomField",
+              "value": {
+                "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
+              }
+            },
+            {
+              "id": "{{ customer_id }}",
+              "$type": "SingleGroupIssueCustomField",
+              "value": {
+                "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
+              }
+            }
+            # For fields expecting an ID (like Assignee, Support Group), ensure you're fetching the correct identifier.
+          ]
+        }
+      status_code: [200, 201]
+    register: response
+    when: subject is defined and issue_details is defined
 
     - name: Check response from RT
       debug:
