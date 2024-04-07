@@ -132,6 +132,14 @@
       loop: "{{ issue_details.json.customFields }}"
       when: issue_details.json.customFields is defined
 
+    - name: Debug custom field variables
+      debug:
+        msg:
+        - "Priority ID: {{ priority_id }}"
+        - "Assignee Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
+        - "Support Group Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
+        - "Customer Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
+
     - name: Create a new ticket
       uri:
         url: "{{ yt_url }}/api/issues"
