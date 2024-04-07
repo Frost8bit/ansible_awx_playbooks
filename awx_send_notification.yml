@@ -139,7 +139,7 @@
         headers:
           Authorization: "Bearer {{ yt_api_token }}"
           Accept: "application/json"
-        register: project_custom_fields
+      register: project_custom_fields
 
     - name: Debug custom field variables
       debug:
