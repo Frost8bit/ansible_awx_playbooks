@@ -132,6 +132,15 @@
       loop: "{{ issue_details.json.customFields }}"
       when: issue_details.json.customFields is defined
 
+    - name: Fetch project custom fields configuration
+      uri:
+        url: "{{ yt_url }}/api/admin/projects/{project_id}/customFields?fields=id,field(name,bundle(id,name))"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ yt_api_token }}"
+          Accept: "application/json"
+        register: project_custom_fields
+
     - name: Debug custom field variables
       debug:
         msg:
@@ -167,21 +176,21 @@
                 }
               },
               {
-                "id": "{{ assignee_id }}",
+                "id": "{{ assignee_field_id }}",
                 "$type": "SingleUserIssueCustomField",
                 "value": {
                   "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
                 }
               },
               {
-                "id": "{{ support_group_id }}",
+                "id": "{{ support_group_field_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
+                  "name": "{{ issue_det ails.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
                 }
               },
               {
-                "id": "{{ customer_id }}",
+                "id": "{{ customer_field_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
                   "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
