@@ -161,31 +161,22 @@
               {
                 "id": "{{ priority_id }}",
                 "$type": "SingleEnumIssueCustomField",
-                "value": {
-                  "name": "Low",
-                  "$type": "EnumBundleElement"
-                }
+                "value": { "name": "Low" }
               },
               {
                 "id": "{{ assignee_id }}",
                 "$type": "SingleUserIssueCustomField",
-                "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
-                }
+                "value": { "name": "Oleksii Bondar" }
               },
               {
                 "id": "{{ support_group_id }}",
                 "$type": "SingleGroupIssueCustomField",
-                "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
-                }
+                "value": { "name": "SG12" }
               },
               {
                 "id": "{{ customer_id }}",
                 "$type": "SingleGroupIssueCustomField",
-                "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
-                }
+                "value": { "name": "PortaOne CN Support Test Installations" }
               }
             ]
           }
