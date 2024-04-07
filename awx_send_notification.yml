@@ -111,7 +111,7 @@
 
     - name: Fetch update TT details
       uri:
-        url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name))"
+        url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name,$type),projectCustomField(field(bundle(id,name))))"
         method: GET
         validate_certs: no
         headers:
@@ -161,22 +161,31 @@
               {
                 "id": "{{ priority_id }}",
                 "$type": "SingleEnumIssueCustomField",
-                "value": { "name": "Low" }
+                "value": {
+                  "name": "Low",
+                  "$type": "EnumBundleElement"
+                }
               },
               {
                 "id": "{{ assignee_id }}",
                 "$type": "SingleUserIssueCustomField",
-                "value": { "name": "Oleksii Bondar" }
+                "value": {
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
+                }
               },
               {
                 "id": "{{ support_group_id }}",
                 "$type": "SingleGroupIssueCustomField",
-                "value": { "name": "SG12" }
+                "value": {
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
+                }
               },
               {
                 "id": "{{ customer_id }}",
                 "$type": "SingleGroupIssueCustomField",
-                "value": { "name": "PortaOne CN Support Test Installations" }
+                "value": {
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
+                }
               }
             ]
           }
