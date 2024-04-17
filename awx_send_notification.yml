@@ -120,7 +120,7 @@
         return_content: yes
         status_code: 200
       register: issue_details
-      when: ticket is defined and subject is defined
+      when: api_target == 'YT' and ticket is defined and subject is defined
 
     - name: Debug issue_details
       debug:
@@ -140,6 +140,7 @@
           Authorization: "Bearer {{ yt_api_token }}"
           Accept: "application/json"
       register: project_custom_fields
+      when: api_target == 'YT' and ticket is defined and subject is defined
 
     - name: Debug custom field variables
       debug:
@@ -148,6 +149,7 @@
         - "Assignee Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
         - "Support Group Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
         - "Customer Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
+        when: issue_details.json.customFields is defined
 
     - name: Create a new ticket
       uri:
