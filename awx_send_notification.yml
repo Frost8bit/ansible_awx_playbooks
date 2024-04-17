@@ -88,7 +88,7 @@
           Authorization: "Bearer {{ yt_api_token }}"
         status_code: [200]  
       register: response
-      when: api_target == 'YT' and subject is undefined or subject | trim == ""
+      when: (api_target == 'YT' and (subject is undefined or subject | trim == ""))
 
     - name: Set status of YT ticket to 'Open'
       uri:
@@ -107,7 +107,7 @@
           Content-Type: "application/json"
           Authorization: "Bearer {{ yt_api_token }}"
         status_code: [200]
-      when: api_target == 'YT' and subject is undefined or subject | trim == ""
+      when: (api_target == 'YT' and (subject is undefined or subject | trim == ""))
 
     - name: Fetch update TT details
       uri:
