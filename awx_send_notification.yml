@@ -111,7 +111,7 @@
 
     - name: Fetch update TT details
       uri:
-        url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name,$type),projectCustomField(field(bundle(id,name))))"
+        url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(id,name,$type))"
         method: GET
         validate_certs: no
         headers:
