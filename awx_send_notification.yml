@@ -122,25 +122,11 @@
       register: issue_details
       when: api_target == 'YT' and ticket is defined and subject is defined
 
-    - name: Debug issue_details
-      debug:
-        var: issue_details
-
     - name: Debug customFields from issue_details
       debug:
         msg: "Field ID: {{ item.id }}, Field Name: {{ item.name }}, Value Name: {{ (item.value.name if item.value is mapping and item.value.name is defined else item.value) | default('N/A') }}"
       loop: "{{ issue_details.json.customFields }}"
       when: issue_details.json.customFields is defined
-
-    - name: Fetch project custom fields configuration
-      uri:
-        url: "{{ yt_url }}/api/admin/projects/{project_id}/customFields?fields=id,field(name,bundle(id,name))"
-        method: GET
-        headers:
-          Authorization: "Bearer {{ yt_api_token }}"
-          Accept: "application/json"
-      register: project_custom_fields
-      when: api_target == 'YT' and ticket is defined and subject is defined
 
     - name: Create a new ticket
       uri:
@@ -172,21 +158,21 @@
                 "id": "{{ assignee_field_id }}",
                 "$type": "SingleUserIssueCustomField",
                 "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
+                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.id') | first }}"
                 }
               },
               {
                 "id": "{{ support_group_field_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
-                  "name": "{{ issue_det ails.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
+                  "id": "{{ issue_det ails.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.id') | first }}"
                 }
               },
               {
                 "id": "{{ customer_field_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
-                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
+                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.id') | first }}"
                 }
               }
             ]
