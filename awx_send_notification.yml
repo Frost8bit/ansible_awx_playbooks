@@ -146,10 +146,10 @@
       debug:
         msg:
         - "Priority ID: {{ priority_id }}"
-        - "Assignee Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
-        - "Support Group Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
-        - "Customer Name: {{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
-        when: api_target == 'YT' and issue_details.json.customFields is defined
+        - "Assignee Name: {{ (issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first) if ('json' in issue_details and 'customFields' in issue_details.json) else 'Assignee information unavailable' }}"
+        - "Support Group Name: {{ (issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first) if ('json' in issue_details and 'customFields' in issue_details.json) else 'Support Group information unavailable' }}"
+        - "Customer Name: {{ (issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first) if ('json' in issue_details and 'customFields' in issue_details.json) else 'Customer information unavailable' }}"
+        when: api_target == 'YT' and issue_details is defined and 'json' in issue_details and 'customFields' in issue_details.json
 
     - name: Create a new ticket
       uri:
