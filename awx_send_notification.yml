@@ -150,16 +150,14 @@
                 "name": "Priority",
                 "$type": "SingleEnumIssueCustomField",
                 "value": {
-                  "name": "Low",
-                  "$type": "EnumBundleElement"
+                  "name": "Low"
                 }
               },
               {
                 "name": "Status",
-                "$type": "SingleEnumIssueCustomField",
+                "$type": "StateIssueCustomField",
                 "value": {
-                  "name": "Low",
-                  "$type": "EnumBundleElement"
+                  "name": "Stalled"
                 }
               },              
               {
@@ -177,7 +175,6 @@
                 }
               },
               {
-                "id": "{{ support_group_field_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
                   "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.id') | first }}"
