@@ -172,11 +172,9 @@
                 "$type": "MultiUserIssueCustomField",
                 "value": [
                   {% for user in issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first %}
-                  {"id": "{{ user.id }}"}
-                  {% if not loop.last %},{% endif %}
+                  {"id": "{{ user.id }}"}{% if not loop.last %},{% endif %}
                   {% endfor %}
-                  ]   
-                }
+                ]   
               },
               { 
                 "name": "Support Group",
