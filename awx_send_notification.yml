@@ -161,14 +161,14 @@
                 }
               },              
               {
-                "id": "{{ assignee_field_id }}",
+                "name": "Assignee",
                 "$type": "SingleUserIssueCustomField",
                 "value": {
                   "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.id') | first }}"
                 }
               },
               {
-                "id": "{{ requester_field_id }}",
+                "name": "Requester",
                 "$type": "MultiUserIssueCustomField",
                 "value": [
                   {% for user in issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first %}
@@ -184,7 +184,7 @@
                 }
               },
               {
-                "id": "{{ customer_field_id }}",
+                "name": "Customer",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
                   "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.id') | first }}"
