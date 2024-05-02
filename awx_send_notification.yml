@@ -168,7 +168,7 @@
                 }
               },
               { 
-                "name: "Support Group",
+                "name": "Support Group",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
                   "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.id') | first }}"
