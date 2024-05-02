@@ -196,23 +196,6 @@
       register: response
       when: api_target == 'YT' and subject is defined and issue_details is defined
 
-    - name: Set new task ID
-      set_fact:
-        new_task_id: "{{ response.json.id }}"
-      when: api_target == 'YT' and response is defined
-
-    - name: Link new ticket to parent ticket
-      uri:
-        url: "{{ yt_url }}/api/issues/{{ new_task_id }}/link-to"
-        method: POST
-        validate_certs: no
-        headers:
-          Authorization: "Bearer {{ yt_api_token }}"
-          Content-Type: "application/json"
-        body_format: json
-        body: "{\"parent\": \"{{ ticket }}\"}"
-        status_code: 200
-
     - name: Check response from RT
       debug:
         var: response
