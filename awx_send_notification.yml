@@ -171,13 +171,10 @@
                 "id": "{{ requester_field_id }}",
                 "$type": "MultiUserIssueCustomField",
                 "value": {
-                  "id": "{{ requester_field_id }}",
-                  "$type": "MultiUserIssueCustomField",
-                  "value": [
-                    {% for user in issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first %}
-                    {"id": "{{ user.id }}"}
-                    {% if not loop.last %},{% endif %}
-                    {% endfor %}
+                  {% for user in issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first %}
+                  {"id": "{{ user.id }}"}
+                  {% if not loop.last %},{% endif %}
+                  {% endfor %}
                   ]   
                 }
               },
