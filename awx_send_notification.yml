@@ -167,6 +167,13 @@
                   "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.id') | first }}"
                 }
               },
+              {
+                "id": "{{ requester_field_id }}",
+                "$type": "MultiUserIssueCustomField",
+                "value": {
+                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value.id') | join(',') }}"
+                }
+              },
               { 
                 "name": "Support Group",
                 "$type": "SingleGroupIssueCustomField",
