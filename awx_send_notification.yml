@@ -103,11 +103,10 @@
         body_format: json
         body:
           customFields:
-            - id: "82-1398" #should be checked for prod YT
+            - name: "Status",
               $type: "StateIssueCustomField"
               value:
                 name: "Open"
-                $type: "StateBundleElement"
         headers:
           Content-Type: "application/json"
           Authorization: "Bearer {{ yt_api_token }}"
@@ -211,12 +210,12 @@
         return_content: yes
         status_code: 200
       register: new_ticket_details
-      when: yt_response is defined
+      when: api_target == 'YT' and yt_response is defined
 
     - name: Extract human readable ticket ID
       set_fact:
         new_ticket_id: "{{ new_ticket_details.json.project.shortName }}-{{ new_ticket_details.json.numberInProject }}"
-      when: new_ticket_details is defined
+      when: api_target == 'YT' and new_ticket_details is defined
 
     - name: Link new ticket as subtask of update ticket
       uri:
@@ -238,11 +237,7 @@
             ]
           }
         status_code: 200
-      when: new_ticket_id is defined
-
-    - name: Debug linked ticket information
-      debug:
-        msg: "The new ticket {{ new_ticket_id }} has been linked as a subtask to the original ticket {{ ticket }}"
+      when: api_target == 'YT' and new_ticket_id is defined
 
     - name: Check response from YT
       debug:
