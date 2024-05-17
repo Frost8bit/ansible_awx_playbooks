@@ -41,9 +41,9 @@
           replace('\n', ' \n ') }}"
       when: lvl.cmd_output is defined or lvl.aux_cmd_output is defined
 
-    - name: Set updated_notification when cmd_output/aux_cmd_output are not defined
+    - name: Set updated_notification = notification when cmd_output/aux_cmd_output are not defined
       set_fact:
-        updated_notification: "{{ notification | replace('\n', ' \n ') }}"
+        updated_notification: "{{ notification }}"
       when: lvl.cmd_output is undefined and lvl.aux_cmd_output is undefined
 
     - name: Send reply to the ticket in RT
@@ -86,9 +86,9 @@
           Content-Type: "application/json"
           Accept: "application/json"
           Authorization: "Bearer {{ yt_api_token }}"
-        status_code: [200]  
+        status_code: [200]
       register: response
-      when: (api_target == 'YT' and (subject is undefined or subject | trim == ""))
+      when: api_target == 'YT' and subject is undefined or subject | trim == ""
 
     - name: Set status of YT ticket to 'Open'
       uri:
@@ -107,11 +107,11 @@
           Content-Type: "application/json"
           Authorization: "Bearer {{ yt_api_token }}"
         status_code: [200]
-      when: (api_target == 'YT' and (subject is undefined or subject | trim == ""))
+      when: api_target == 'YT' and subject is undefined or subject | trim == ""
 
     - name: Fetch update TT details
       uri:
-        url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(id,name,$type))"
+        url: "{{ yt_url }}/api/issues/{{ ticket }}?fields=id,summary,customFields(id,name,value(name))"
         method: GET
         validate_certs: no
         headers:
@@ -120,7 +120,11 @@
         return_content: yes
         status_code: 200
       register: issue_details
-      when: api_target == 'YT' and ticket is defined and subject is defined
+      when: ticket is defined and subject is defined
+
+    - name: Debug issue_details
+      debug:
+        var: issue_details
 
     - name: Debug customFields from issue_details
       debug:
@@ -144,57 +148,55 @@
               "id": "{{ project_id }}"
             },
             "summary": "{{ subject }}",
-            "description": "{{ updated_notification | regex_replace('\r?\n', '\\n') }}",
+            "description": "{{ updated_notification }}",
             "customFields": [
               {
-                "name": "Priority",
+                "id": "{{ priority_id }}",
                 "$type": "SingleEnumIssueCustomField",
                 "value": {
-                  "name": "Low"
+                  "name": "Low",
+                  "$type": "EnumBundleElement"
                 }
               },
               {
-                "name": "Status",
-                "$type": "StateIssueCustomField",
-                "value": {
-                  "name": "Stalled"
-                }
-              },              
-              {
-                "name": "Assignee",
+                "id": "{{ assignee_id }}",
                 "$type": "SingleUserIssueCustomField",
                 "value": {
-                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.id') | first }}"
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Assignee') | map(attribute='value.name') | first }}"
                 }
               },
               {
-                "name": "Requester",
-                "$type": "MultiUserIssueCustomField",
-                "value": [
-                  {% for user in issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first %}
-                  {"id": "{{ user.id }}"}{% if not loop.last %},{% endif %}
-                  {% endfor %}
-                ]   
-              },
-              { 
-                "name": "Support Group",
+                "id": "{{ support_group_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
-                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.id') | first }}"
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.name') | first }}"
                 }
               },
               {
-                "name": "Customer",
+                "id": "{{ customer_id }}",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
-                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.id') | first }}"
+                  "name": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.name') | first }}"
                 }
               }
             ]
           }
         status_code: 200
-      register: response
-      when: api_target == 'YT' and subject is defined and issue_details is defined
+      register: yt_response
+      when: subject is defined and issue_details is defined
+
+    - name: Fetch issue name using new ticket ID
+      uri:
+        url: "{{ yt_url }}/api/issues/{{ yt_response.json.id }}?fields=id,summary"
+        method: GET
+        validate_certs: no
+        headers:
+          Authorization: "Bearer {{ yt_api_token }}"
+          Accept: "application/json"
+        return_content: yes
+        status_code: 200
+      register: new_ticket_id
+      when: yt_response.json.id is defined
 
     - name: Check response from RT
       debug:
