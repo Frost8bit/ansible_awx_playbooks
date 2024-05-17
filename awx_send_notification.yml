@@ -61,6 +61,11 @@
       register: response
       when: api_target == 'RT'
 
+    - name: Check response from RT
+      debug:
+        var: response
+      when: api_target == 'RT'
+
     - name: Set status of RT ticket to 'open'
       uri:
         url: "{{ rt_url }}/REST/1.0/ticket/{{ rt_ticket }}/edit"
@@ -214,14 +219,33 @@
         new_ticket_id: "{{ new_ticket_details.json.project.shortName }}-{{ new_ticket_details.json.numberInProject }}"
       when: new_ticket_details is defined
 
-    - name: Debug new_ticket_id
-      debug:
-        var: new_ticket_id
+    - name: Link new ticket as subtask to original ticket
+      uri:
+        url: "{{ yt_url }}/api/issues/{{ ticket }}/links"
+        method: POST
+        validate_certs: no
+        body_format: json
+        headers:
+          Authorization: "Bearer {{ yt_api_token }}"
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body: >-
+          {
+            "linkType": {
+              "name": "Subtask"
+            },
+            "issues": [
+              {
+                "id": "{{ yt_response.json.id }}"
+              }
+            ]
+          }
+        status_code: 200
+      when: yt_response is defined and new_ticket_id is defined
 
-    - name: Check response from RT
+    - name: Debug linked ticket information
       debug:
-        var: response
-      when: api_target == 'RT'
+        msg: "The new ticket {{ new_ticket_id }} has been linked as a subtask to the original ticket {{ ticket }}"
 
     - name: Check response from YT
       debug:
