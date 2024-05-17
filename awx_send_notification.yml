@@ -129,15 +129,7 @@
 
     - name: Extract tags from summary
       set_fact:
-        tags: >-
-          {{
-            issue_details.json.summary | 
-            regex_findall('\\[([^\\]]+)\\]') | 
-            select('search', '^(?!update$)', 'i') | 
-            map('regex_replace', '(.*)', '[\\1]') | 
-            list | 
-            join(' ')
-          }}
+        tags: "{{ issue_details.json.summary | regex_findall('\\[(.*?)\\]') | select('search', '^(?!update$)', 'i') | map('regex_replace', '(.*)', '[\\1]') | join(' ') }}"
       when: issue_details.json.summary is defined
 
     - name: Create a new ticket
