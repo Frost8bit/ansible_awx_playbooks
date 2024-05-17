@@ -233,7 +233,7 @@
           {
             "issues": [
               {
-                "id": "{{ yt_response.json.id }}"
+                "id": "{{ new_ticket_id }}"
               }
             ],
             "linkType": {
