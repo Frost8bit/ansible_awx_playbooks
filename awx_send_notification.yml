@@ -103,7 +103,7 @@
         body_format: json
         body:
           customFields:
-            - name: "Status",
+            - name: "Status"
               $type: "StateIssueCustomField"
               value:
                 name: "Open"
