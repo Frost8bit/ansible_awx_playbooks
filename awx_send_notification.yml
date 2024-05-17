@@ -132,7 +132,7 @@
         tags: >-
           {{
             issue_details.json.summary | 
-            regex_findall('\\[(.*?)\\]') | 
+            regex_findall('\\[([^\\]]+)\\]') | 
             select('search', '^(?!update$)', 'i') | 
             map('regex_replace', '^', '[') | 
             map('regex_replace', '$', ']') | 
