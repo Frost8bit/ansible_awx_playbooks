@@ -196,7 +196,7 @@
       register: yt_response
       when: api_target == 'YT' and subject is defined and issue_details is defined
 
-    - name: Fetch ticket info
+    - name: Fetch new ticket info
       uri:
         url: "{{ yt_url }}/api/issues/{{ yt_response.json.id }}?fields=id,summary,project(shortName),numberInProject"
         method: GET
@@ -206,8 +206,17 @@
           Accept: "application/json"
         return_content: yes
         status_code: 200
-      register: new_ticket_info
+      register: new_ticket_details
       when: yt_response is defined
+
+    - name: Extract human readable ticket ID
+      set_fact:
+        new_ticket_id: "{{ new_ticket_details.json.project.shortName }}-{{ new_ticket_details.json.numberInProject }}"
+      when: new_ticket_info is defined
+
+    - name: Debug new_ticket_id
+      debug:
+        var: new_ticket_id
 
     - name: Check response from RT
       debug:
@@ -216,5 +225,5 @@
 
     - name: Check response from YT
       debug:
-        var: response
+        var: yt_response
       when: api_target == 'YT'
