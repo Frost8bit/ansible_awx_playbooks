@@ -219,9 +219,9 @@
         new_ticket_id: "{{ new_ticket_details.json.project.shortName }}-{{ new_ticket_details.json.numberInProject }}"
       when: new_ticket_details is defined
 
-    - name: Link new ticket as subtask to original ticket
+    - name: Link new ticket as subtask of update ticket
       uri:
-        url: "{{ yt_url }}/api/issues/{{ ticket }}/links"
+        url: "{{ yt_url }}/api/commands"
         method: POST
         validate_certs: no
         body_format: json
@@ -231,17 +231,15 @@
           Accept: "application/json"
         body: >-
           {
+            "query": "subtask of {{ ticket }}",
             "issues": [
               {
-                "id": "{{ new_ticket_id }}"
+                "idReadable": "{{ new_ticket_id }}"
               }
-            ],
-            "linkType": {
-              "name": "subtask"
-            }
+            ]
           }
-        status_code: 201
-      when: yt_response is defined and new_ticket_id is defined
+        status_code: 200
+      when: new_ticket_id is defined
 
     - name: Debug linked ticket information
       debug:
