@@ -131,13 +131,7 @@
       set_fact:
         tags: >-
           {{
-            issue_details.json.summary | 
-            regex_findall('\\[([^\\]]+)\\]') | 
-            select('search', '^(?!update$)', 'i') | 
-            map('regex_replace', '^', '[') | 
-            map('regex_replace', '$', ']') | 
-            list | 
-            join(' ')
+            issue_details.json.summary.split('[') | map('trim') | select('search', '^(?!update).*$', 'i') | map('regex_replace', '^(.*)$', '[\\1]') | list | join(' ')
           }}
       when: issue_details.json.summary is defined
 
