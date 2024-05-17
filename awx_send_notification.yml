@@ -193,8 +193,21 @@
             ]
           }
         status_code: 200
-      register: response
+      register: yt_response
       when: api_target == 'YT' and subject is defined and issue_details is defined
+
+    - name: Fetch issue name using new ticket ID
+      uri:
+        url: "{{ yt_url }}/api/issues/{{ yt_response.json.id }}?fields=id,summary"
+        method: GET
+        validate_certs: no
+        headers:
+          Authorization: "Bearer {{ yt_api_token }}"
+          Accept: "application/json"
+        return_content: yes
+        status_code: 200
+      register: new_ticket_id
+      when: yt_response is defined
 
     - name: Check response from RT
       debug:
