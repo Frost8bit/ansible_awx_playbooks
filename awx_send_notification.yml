@@ -130,7 +130,7 @@
 
     - name: Extract tags from summary
       set_fact:
-        tags: "{{ issue_details.json.summary | regex_findall('\\[(.*?)\\]') | select('search', '^((?!UPDATE).)*$') | map('lower') | list | join(' ') }}"
+        tags: "{{ issue_details.json.summary | regex_findall('\\[(.*?)\\]') | select('search', '^(?!update$).*$', 'i') | map('trim') | list | join(' ') }}"
       when: issue_details.json.summary is defined
 
     - name: Create a new ticket
@@ -148,7 +148,7 @@
             "project": {
               "id": "{{ project_id }}"
             },
-            "summary": "{{ subject }}",
+            "summary": "{{ tags }} {{ subject }}",
             "description": "{{ updated_notification | regex_replace('\r?\n', '\\n') }}",
             "customFields": [
               {
