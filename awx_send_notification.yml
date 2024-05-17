@@ -212,7 +212,7 @@
     - name: Extract human readable ticket ID
       set_fact:
         new_ticket_id: "{{ new_ticket_details.json.project.shortName }}-{{ new_ticket_details.json.numberInProject }}"
-      when: new_ticket_info is defined
+      when: new_ticket_details is defined
 
     - name: Debug new_ticket_id
       debug:
