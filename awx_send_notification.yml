@@ -91,7 +91,7 @@
           Content-Type: "application/json"
           Accept: "application/json"
           Authorization: "Bearer {{ yt_api_token }}"
-        status_code: [200]  
+        status_code: [200]
       register: response
       when: (api_target == 'YT' and (subject is undefined or subject | trim == ""))
 
@@ -162,7 +162,7 @@
                 "value": {
                   "name": "Stalled"
                 }
-              },              
+              },
               {
                 "name": "Assignee",
                 "$type": "SingleUserIssueCustomField",
@@ -177,9 +177,9 @@
                   {% for user in issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first %}
                   {"id": "{{ user.id }}"}{% if not loop.last %},{% endif %}
                   {% endfor %}
-                ]   
+                ]
               },
-              { 
+              {
                 "name": "Support Group",
                 "$type": "SingleGroupIssueCustomField",
                 "value": {
