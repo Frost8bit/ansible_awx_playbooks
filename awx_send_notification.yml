@@ -171,7 +171,7 @@
                 }
               },
               {
-                "id": "{{ requester_field_id }}",
+                "name": "Requester",
                 "$type": "MultiUserIssueCustomField",
                 "value": [
                   {% for user in issue_details.json.customFields | selectattr('name', 'equalto', 'Requester') | map(attribute='value') | first %}
