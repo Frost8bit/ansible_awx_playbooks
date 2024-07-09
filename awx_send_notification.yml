@@ -210,7 +210,7 @@
         return_content: yes
         status_code: 200
       register: new_ticket_details
-      when: api_target == 'YT' and yt_response is defined
+      when: api_target == 'YT' and yt_response is defined and subject is defined
 
     - name: Extract human readable ticket ID
       set_fact:
