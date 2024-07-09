@@ -237,7 +237,7 @@
             ]
           }
         status_code: 200
-      when: api_target == 'YT' and new_ticket_id is defined
+      when: api_target == 'YT' and new_ticket_id is defined and subject is defined
 
     - name: Check response from YT
       debug:
