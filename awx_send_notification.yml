@@ -215,7 +215,7 @@
     - name: Extract human readable ticket ID
       set_fact:
         new_ticket_id: "{{ new_ticket_details.json.project.shortName }}-{{ new_ticket_details.json.numberInProject }}"
-      when: api_target == 'YT' and new_ticket_details is defined
+      when: api_target == 'YT' and new_ticket_details is defined and subject is defined
 
     - name: Link new ticket as subtask of update ticket
       uri:
