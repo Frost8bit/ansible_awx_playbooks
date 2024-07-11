@@ -185,13 +185,6 @@
                 "value": {
                   "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Support Group') | map(attribute='value.id') | first }}"
                 }
-              },
-              {
-                "name": "Customer",
-                "$type": "SingleGroupIssueCustomField",
-                "value": {
-                  "id": "{{ issue_details.json.customFields | selectattr('name', 'equalto', 'Customer') | map(attribute='value.id') | first }}"
-                }
               }
             ]
           }
