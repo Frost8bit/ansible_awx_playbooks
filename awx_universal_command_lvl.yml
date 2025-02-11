@@ -40,7 +40,7 @@
 
     - name: define additional vars
       set_fact: 
-      tt: {{ ticket }}
+      tt: "{{ ticket }}"
 
     - name: show vars
       debug: var="{{ cmd_prefix }}"
