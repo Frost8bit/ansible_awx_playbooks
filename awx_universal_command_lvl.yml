@@ -52,7 +52,7 @@
 
     - name: run command
       shell:
-         cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['cmd_text'] | format(tt=vars['tt'], ticket=vars['ticket']) }}"
+         cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['cmd_text'] | template }}"
          executable: /bin/bash
       when: vars[cmd_var] is defined
       register: cmd_result
