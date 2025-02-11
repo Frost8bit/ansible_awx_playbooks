@@ -53,12 +53,12 @@
     - name: process command with template
       template:
         src: "{{ vars[cmd_prefix]['cmd_text'] }}"
-        dest: "/tmp/processed_command.sh"
+        dest: "/tmp/command.txt"
       when: vars[cmd_var] is defined
 
     - name: run command
       shell:
-         cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['cmd_text'] }}"
+         cmd: "{{ pipefail_cmd }}{{ lookup('file', '/tmp/command.txt') }}"
          executable: /bin/bash
       when: vars[cmd_var] is defined
       register: cmd_result
