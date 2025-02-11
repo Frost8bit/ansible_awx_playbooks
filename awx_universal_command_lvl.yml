@@ -5,7 +5,6 @@
     def_lvl: "lvl_none"
     cmd_var: "command"
     aux_cmd_var: "aux_command"
-    tt: "ticket"
     pipefail_cmd: ""
     exit_on_stderr: true
     
@@ -38,6 +37,10 @@
         "{{ cmd_prefix }}":
             cmd_text: "{{ vars[cmd_var] if vars[cmd_var] is defined else '' }}"
             aux_cmd_text: "{{ vars[aux_cmd_var] if vars[aux_cmd_var] is defined else '' }}"
+
+    - name: define additional vars
+      set_fact: 
+      tt: {{ ticket }}
 
     - name: show vars
       debug: var="{{ cmd_prefix }}"
