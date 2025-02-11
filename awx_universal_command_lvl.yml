@@ -44,21 +44,18 @@
             aux_cmd_text: "{{ vars[aux_cmd_var] if vars[aux_cmd_var] is defined else '' }}"
 
     - name: show vars
-      debug: var="{{ cmd_prefix }}"
-
+      debug:
+        msg:
+          - "cmd_prefix: {{ cmd_prefix }}"
+          - "tt: {{ tt }}"
+        
     - name: exit on undef cmd
       fail: msg="XXX{{':'}} Args error{{':'}} '{{ cmd_var }}' is undefined"
       when: vars[cmd_var] is not defined
 
-    - name: process command with template
-      template:
-        src: "{{ vars[cmd_prefix]['cmd_text'] }}"
-        dest: "/tmp/command.txt"
-      when: vars[cmd_var] is defined
-
     - name: run command
       shell:
-         cmd: "{{ pipefail_cmd }}{{ lookup('file', '/tmp/command.txt') }}"
+         cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['cmd_text'] }}"
          executable: /bin/bash
       when: vars[cmd_var] is defined
       register: cmd_result
