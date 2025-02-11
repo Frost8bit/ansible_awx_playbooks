@@ -5,6 +5,7 @@
     def_lvl: "lvl_none"
     cmd_var: "command"
     aux_cmd_var: "aux_command"
+    tt: "ticket"
     pipefail_cmd: ""
     exit_on_stderr: true
     
