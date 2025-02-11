@@ -50,9 +50,15 @@
       fail: msg="XXX{{':'}} Args error{{':'}} '{{ cmd_var }}' is undefined"
       when: vars[cmd_var] is not defined
 
+    - name: process command with template
+      template:
+        src: "{{ vars[cmd_prefix]['cmd_text'] }}"
+        dest: "/tmp/processed_command.sh"
+      when: vars[cmd_var] is defined
+
     - name: run command
       shell:
-         cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['cmd_text'] | template }}"
+         cmd: "{{ pipefail_cmd }}{{ vars[cmd_prefix]['cmd_text'] }}"
          executable: /bin/bash
       when: vars[cmd_var] is defined
       register: cmd_result
