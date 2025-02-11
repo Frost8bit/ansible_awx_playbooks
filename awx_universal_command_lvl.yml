@@ -38,27 +38,9 @@
             cmd_text: "{{ vars[cmd_var] if vars[cmd_var] is defined else '' }}"
             aux_cmd_text: "{{ vars[aux_cmd_var] if vars[aux_cmd_var] is defined else '' }}"
 
-# when the variable is set inside another variable, it is considered as a string
-# lvl_1_command: "echo {{ ticket }}" --> command output will be "{{ ticket }} "
-# we need to replace it with the actual value
-
-- name: replace variables with their values
-      set_fact:
-        "{{ cmd_prefix }}":
-            cmd_text: >-
-              {{ vars[cmd_prefix]['cmd_text'] 
-                 | replace('{{ ticket }}', ticket)
-                 | replace('{{ mr_from }}', mr_from)
-                 | replace('{{ mr_to }}', mr_to) }}
-            aux_cmd_text: "{{ vars[cmd_prefix]['aux_cmd_text'] }}"
-      when: ticket is defined or mr_from is defined or mr_to is defined
-
     - name: show vars
-      debug:
-        msg:
-          - "cmd_prefix: {{ cmd_prefix }}"
-          - "tt: {{ tt }}"
-        
+      debug: var="{{ cmd_prefix }}"
+
     - name: exit on undef cmd
       fail: msg="XXX{{':'}} Args error{{':'}} '{{ cmd_var }}' is undefined"
       when: vars[cmd_var] is not defined
@@ -77,7 +59,7 @@
       when:
         - vars[cmd_var] is defined
         - vars[aux_cmd_var] is defined
-      register: aux_cmd_result     
+      register: aux_cmd_result
 
     - name: fail task if sterr not empty
       fail: msg="XXX{{':'}} STDERR is not empty. If it is expected, set 'check_stderr{{':'}} 0' for IUN, or use redirect of stderr (like 2>/dev/null) "
@@ -88,7 +70,6 @@
          xxx :
            cmd_output : "{{ cmd_result.stdout if cmd_result.stdout is defined else '' }}"
            aux_cmd_output : "{{ aux_cmd_result.stdout if aux_cmd_result.stdout is defined else '' }}"
-
 
     - name: transfer facts to pass down to the next Job template
       set_fact:
@@ -109,4 +90,3 @@
 
     - name: show res
       debug: var="{{ cmd_prefix }}"
-
