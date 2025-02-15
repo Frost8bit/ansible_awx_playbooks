@@ -29,9 +29,23 @@
         rt_ticket: "{{ ticket | regex_replace('^TT', '') }}"
       when: api_target == 'RT'
 
+    - name: Debug lvl_1, lvl_2, and lvl_3
+      debug:
+        msg:
+          - "lvl_1: {{ lvl_1 | default('Not Defined') }}"
+          - "lvl_2: {{ lvl_2 | default('Not Defined') }}"
+          - "lvl_3: {{ lvl_3 | default('Not Defined') }}"
+    
     - name: Get lvl output
       set_fact:
-        lvl: "{{ lvl_1 if lvl_1 is defined else lvl_2 if lvl_2 is defined else lvl_3 if lvl_3 is defined else 'Unknown' }}"
+        lvl: >-
+          {{ lvl_1 if lvl_1 is defined else
+             lvl_2 if lvl_2 is defined else
+             lvl_3 if lvl_3 is defined else 'Unknown' }}
+    
+    - name: Debug lvl output
+      debug:
+        msg: "Final lvl: {{ lvl }}"
 
     - name: Append data from variables to notification
       set_fact:
