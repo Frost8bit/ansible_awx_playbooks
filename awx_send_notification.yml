@@ -47,6 +47,7 @@
     - name: Print lvl
       debug:
         msg: "Current lvl: {{ lvl }}"
+      when: lvl is defined
 
     - name: Append data from variables to notification
       set_fact:
