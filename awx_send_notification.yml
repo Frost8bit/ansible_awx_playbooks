@@ -53,9 +53,11 @@
         updated_notification: "{{ notification |
           replace('{{ cmd_output }}', lvl.cmd_output | default('')) |
           replace('{{ aux_cmd_output }}', lvl.aux_cmd_output | default('')) |
+          replace('{{ mr_from }}', mr_from | default('')) |
+          replace('{{ mr_to }}', mr_to | default('')) |
           replace('\n', ' \n ') }}"
-      when: lvl.cmd_output is defined or lvl.aux_cmd_output is defined
-
+      when: lvl.cmd_output is defined or lvl.aux_cmd_output is defined or mr_from is defined or mr_to is defined
+  
     - name: Set updated_notification when cmd_output/aux_cmd_output are not defined
       set_fact:
         updated_notification: "{{ notification | replace('\n', ' \n ') }}"
