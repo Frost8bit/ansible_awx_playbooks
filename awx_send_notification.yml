@@ -178,7 +178,7 @@
                 "name": "Status",
                 "$type": "StateIssueCustomField",
                 "value": {
-                  "name": "Stalled"
+                  "name": "{{ status | default('Stalled') }}"
                 }
               },
               {
