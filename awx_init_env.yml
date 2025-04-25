@@ -9,11 +9,11 @@
       include_tasks: awx_save_sql_to_file.yml
 
 
-#    - name: show local dirs 1
-#      local_action:
-#         module: shell
-#         cmd: "ls -lR /runner/project"
-#      ignore_errors: True
+    - name: show local dirs 1
+      local_action:
+         module: shell
+         cmd: "ls -lR /runner/project/scripts/remote"
+      ignore_errors: True
 
 #    - name: show local dirs 2
 #      local_action:
