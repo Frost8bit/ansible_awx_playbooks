@@ -55,7 +55,7 @@
       ansible.builtin.copy:
         src: "/runner/project/{{ source_path }}"
         dest: "{{ destination_path }}"
-        mode: "{{ destination_file_mode | preserve | default('0644') }}"
+        mode: "{{ destination_file_mode | default('preserve') }}"
         backup: yes
       when:
         - source_path is defined
