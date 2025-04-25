@@ -9,29 +9,29 @@
       include_tasks: awx_save_sql_to_file.yml
 
 
-    - name: show local dirs 1
-      local_action:
-         module: shell
-         cmd: "ls -lR /runner/project"
-      ignore_errors: True
+#    - name: show local dirs 1
+#      local_action:
+#         module: shell
+#         cmd: "ls -lR /runner/project"
+#      ignore_errors: True
 
-    - name: show local dirs 2
-      local_action:
-         module: shell
-         cmd: "ls -lR /runner 2>/dev/null"
-      ignore_errors: True
+#    - name: show local dirs 2
+#      local_action:
+#         module: shell
+#         cmd: "ls -lR /runner 2>/dev/null"
+#      ignore_errors: True
 
-    - name: show local dirs 3
-      local_action:   
-         module: shell 
-         cmd: "ls -lR /home 2>/dev/null"
-      ignore_errors: True
+#    - name: show local dirs 3
+#      local_action:   
+#         module: shell 
+#         cmd: "ls -lR /home 2>/dev/null"
+#      ignore_errors: True
 
-    - name: show local dirs
-      local_action: 
-         module: shell
-         cmd: "ls -lR / 2>/dev/null"
-      ignore_errors: True
+#    - name: show local dirs
+#      local_action: 
+#         module: shell
+#         cmd: "ls -lR / 2>/dev/null"
+#      ignore_errors: True
 
 # can use module "synchronize" in case non-exist dest dirs
     - name: copy aux files
@@ -40,3 +40,17 @@
         dest: /home/porta-one/scripts/run_sql.pl
         mode: preserve
         backup: yes
+
+    - name: Copy file from project dir using relative path variable
+      ansible.builtin.copy:
+        src: "/runner/project/{{ source_path }}"
+        dest: "{{ destination_path }}"
+        mode: preserve
+        backup: yes
+        # owner: some_user
+        # group: some_group
+      when:
+        - source_path is defined
+        - source_path | length > 0
+        - remote_destination_path is defined
+        - remote_destination_path | length > 0
