@@ -9,50 +9,6 @@
       include_tasks: awx_save_sql_to_file.yml
 
 
-    - name: show local dirs 1
-      local_action:
-         module: shell
-         cmd: "ls -lR /runner/project/scripts/remote"
-      ignore_errors: True
-
-#    - name: show local dirs 2
-#      local_action:
-#         module: shell
-#         cmd: "ls -lR /runner 2>/dev/null"
-#      ignore_errors: True
-
-#    - name: show local dirs 3
-#      local_action:   
-#         module: shell 
-#         cmd: "ls -lR /home 2>/dev/null"
-#      ignore_errors: True
-
-#    - name: show local dirs
-#      local_action: 
-#         module: shell
-#         cmd: "ls -lR / 2>/dev/null"
-#      ignore_errors: True
-
-# can use module "synchronize" in case non-exist dest dirs
-
-    - name: copy aux files
-      ansible.builtin.copy:
-        src:  /runner/project/scripts/remote/run_sql.pl
-        dest: /home/porta-one/scripts/run_sql.pl
-        mode: preserve
-        backup: yes
-
-- hosts: all
-  name: initial steps for every WF
-  gather_facts: no
-  vars_files:
-    - awx_constants.yml
-
-  tasks:
-    - name: prepare sql files
-      include_tasks: awx_save_sql_to_file.yml
-
-
 #    - name: show local dirs 1
 #      local_action:
 #         module: shell
@@ -86,19 +42,20 @@
         mode: preserve
         backup: yes
 
-    - name: get source file permissions
-      ansible.builtin.stat:
-        path: "/runner/project/{{ source_path }}"
-      register: src_file
+    - name: ensure destination directory exists
+      ansible.builtin.file:
+        path: "{{ destination_path | dirname }}"
+        state: directory
+        mode: '0755'
       when:
-        - source_path is defined
-        - source_path | length > 0
+        - destination_path is defined
+        - destination_path | length > 0
 
     - name: copy file
       ansible.builtin.copy:
         src: "/runner/project/{{ source_path }}"
         dest: "{{ destination_path }}"
-        mode: "{{ destination_file_mode | default(src_file.stat.mode) | default('0644') }}"
+        mode: "{{ destination_file_mode | preserve | default('0644') }}"
         backup: yes
       when:
         - source_path is defined
