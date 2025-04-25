@@ -42,17 +42,19 @@
         mode: preserve
         backup: yes
 
-    - name: Ensure destination directory exists
-      ansible.builtin.file:
-        path: "{{ destination_path }}"
-        state: directory
-        mode: '0755'
+    - name: get source file permissions
+      ansible.builtin.stat:
+        path: "/runner/project/{{ source_path }}"
+      register: src_file
+      when:
+        - source_path is defined
+        - source_path | length > 0
 
-    - name: copy file from project to remote host
+    - name: copy file
       ansible.builtin.copy:
         src: "/runner/project/{{ source_path }}"
         dest: "{{ destination_path }}"
-        mode: preserve
+        mode: "{{ src_file.stat.mode | default('0644') }}"
         backup: yes
       when:
         - source_path is defined
