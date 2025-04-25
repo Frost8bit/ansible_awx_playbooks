@@ -52,5 +52,5 @@
       when:
         - source_path is defined
         - source_path | length > 0
-        - remote_destination_path is defined
-        - remote_destination_path | length > 0
+        - destination_path is defined
+        - destination_path | length > 0
